@@ -17,7 +17,7 @@ export default function UserInfo() {
   const grayColor = useColorModeValue('gray.light', 'gray.dark');
 
   return (
-    <Box>
+    <Box marginTop={4} mb={6}>
       <Flex justifyContent={'space-between'}>
         <Box>
           <Text fontSize="2xl" fontWeight={700}>
@@ -39,14 +39,21 @@ export default function UserInfo() {
           <Avatar
             name="Damian"
             src="https://www.the-sun.com/wp-content/uploads/sites/6/2023/10/www-instagram-com-monkeycatluna-hl-851711797.jpg"
-            size={'xl'}
+            size={{
+              base: 'md',
+              md: 'lg',
+              lg: 'xl',
+            }}
           />
         </Box>
       </Flex>
-      <Text marginBottom={3}>
-        Probably just here to share my favorite songs🎧
+      <Text my={2}>Probably just here to share my favorite songs🎧</Text>
+      <Text
+        marginBottom={7}
+        color={useColorModeValue('gray.light', 'gray.dark')}
+      >
+        0 followers
       </Text>
-      <Text marginBottom={7}>0 followers</Text>
 
       <Button
         bg={'transparent'}

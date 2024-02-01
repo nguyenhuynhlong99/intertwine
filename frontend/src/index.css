@@ -1,10 +1,12 @@
 :root {
   body.chakra-ui-light {
     --color-secondary: #7493dc;
+    --color-support: '#DBE2F2';
   }
 
   body.chakra-ui-dark {
     --color-secondary: #23428b;
+    --color-support: #0d1527;
   }
 }
 
@@ -14,6 +16,9 @@
   width: 40px;
   height: 40px;
   transition: background-color 300ms ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .icon-container:hover {
