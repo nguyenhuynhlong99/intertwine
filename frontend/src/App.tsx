@@ -48,7 +48,11 @@ const colors = {
   },
 };
 
-const theme = extendTheme({ config, styles, colors });
+const fonts = {
+  body: 'Poppins',
+};
+
+const theme = extendTheme({ config, styles, colors, fonts });
 
 function App() {
   return (
