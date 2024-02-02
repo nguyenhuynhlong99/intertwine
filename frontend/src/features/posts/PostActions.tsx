@@ -1,14 +1,13 @@
 import { Flex, useColorModeValue } from '@chakra-ui/react';
 import { ChatCircle, Heart } from '@phosphor-icons/react';
 import { SetStateAction } from 'react';
-// import { useState } from 'react';
 
 interface Props {
-  like: boolean;
-  setLike: React.Dispatch<SetStateAction<boolean>>;
+  liked: boolean;
+  setLiked: React.Dispatch<SetStateAction<boolean>>;
 }
 
-export default function PostActions({ like, setLike }: Props) {
+export default function PostActions({ liked, setLiked }: Props) {
   return (
     <Flex
       onClick={(e) => e.preventDefault()}
@@ -19,10 +18,10 @@ export default function PostActions({ like, setLike }: Props) {
     >
       <button
         className="icon-container"
-        onClick={() => setLike((like) => !like)}
+        onClick={() => setLiked((liked) => !liked)}
       >
         {/* color="rgb(255, 48, 64)" */}
-        {like ? <Heart weight="fill" /> : <Heart />}
+        {liked ? <Heart weight="fill" /> : <Heart />}
       </button>
       <button className="icon-container">
         <ChatCircle />
