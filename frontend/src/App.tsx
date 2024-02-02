@@ -1,15 +1,25 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import AppLayout from './components/AppLayout';
-import { ChakraProvider, ColorModeScript, extendTheme } from '@chakra-ui/react';
+import {
+  ChakraProvider,
+  ColorModeScript,
+  extendTheme,
+  theme as chakraTheme,
+} from '@chakra-ui/react';
 import { mode, GlobalStyleProps } from '@chakra-ui/theme-tools';
 import UserPage from './pages/UserPage';
 import PostPage from './pages/PostPage';
+import AuthPage from './pages/AuthPage';
+import { RecoilRoot } from 'recoil';
 
 const styles = {
   global: (props: GlobalStyleProps) => ({
     body: {
       color: mode('#090d16', '#e9edf6')(props),
       bg: mode('#e5ebfa', '#050b1a')(props),
+    },
+    li: {
+      listStyle: 'none',
     },
   }),
 };
@@ -20,6 +30,10 @@ const config = {
 };
 
 const colors = {
+  bg: {
+    light: '#e5ebfa',
+    dark: '#050b1a',
+  },
   primary: {
     light: '#1d3263',
     dark: '#9cb1e2',
@@ -49,23 +63,86 @@ const colors = {
 };
 
 const fonts = {
-  body: 'Poppins',
+  ...chakraTheme.fonts,
+  body: `Poppins,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"`,
+  heading: `Poppins,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"`,
 };
 
-const theme = extendTheme({ config, styles, colors, fonts });
+const Input = {
+  baseStyle: {
+    field: {
+      border: '1px solid',
+      borderColor: colors.gray.light,
+      backgroundColor: 'transparent',
+
+      _invalid: {
+        borderColor: 'red.100',
+        // boxShadow: `0 0 0 1px red`,
+      },
+
+      _hover: {
+        borderColor: colors.accent.light,
+      },
+      _focusVisible: {
+        borderColor: colors.accent.light,
+        boxShadow: `0 0 0 1px ${colors.accent.light}`,
+      },
+      _focus: {
+        borderColor: colors.accent.light,
+        boxShadow: `0 0 0 1px ${colors.accent.light}`,
+      },
+
+      _dark: {
+        backgroundColor: 'transparent',
+        borderColor: colors.gray.dark,
+        _hover: {
+          borderColor: colors.primary.dark,
+        },
+        _focusVisible: {
+          borderColor: colors.accent.dark,
+          boxShadow: `0 0 0 1px ${colors.accent.dark}`,
+        },
+        _focus: {
+          borderColor: colors.accent.light,
+          boxShadow: `0 0 0 1px ${colors.accent.dark}`,
+        },
+        _invalid: {
+          borderColor: 'red.600',
+          boxShadow: `unset`,
+        },
+      },
+    },
+  },
+  defaultProps: {
+    variant: null,
+  },
+};
+
+const theme = extendTheme({
+  config,
+  styles,
+  colors,
+  fonts,
+  components: {
+    Input,
+  },
+});
 
 function App() {
   return (
     <ChakraProvider theme={theme}>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<AppLayout />}>
-            <Route path=":username" element={<UserPage />} />
-            <Route path=":username/post/:pid" element={<PostPage />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <RecoilRoot>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<AppLayout />}>
+              <Route path=":username" element={<UserPage />} />
+              <Route path=":username/post/:pid" element={<PostPage />} />
+            </Route>
+            <Route path="/auth" element={<AuthPage />} />
+          </Routes>
+        </BrowserRouter>
+      </RecoilRoot>
     </ChakraProvider>
   );
 }

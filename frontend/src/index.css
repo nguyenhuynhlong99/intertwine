@@ -1,14 +1,22 @@
 :root {
   body.chakra-ui-light {
     --color-secondary: #7493dc;
-    --color-support: '#DBE2F2';
+    --color-support: #dbe2f2;
+    --color-accent: #2856c3;
   }
 
   body.chakra-ui-dark {
     --color-secondary: #23428b;
     --color-support: #0d1527;
+    --color-accent: #3c6bd7;
   }
 }
+
+/* input:focus,
+input:focus-visible {
+  border-color: var(--color-accent) !important;
+  box-shadow: 0 0 0 1px var(--color-accent) !important;
+} */
 
 .icon-container {
   border-radius: 50%;

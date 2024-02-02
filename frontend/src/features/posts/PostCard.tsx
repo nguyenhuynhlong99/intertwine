@@ -1,6 +1,7 @@
 import {
   Avatar,
   Box,
+  Divider,
   Flex,
   Grid,
   GridItem,
@@ -27,7 +28,7 @@ export default function PostCard({
   content,
   variant = 'post',
 }: Props) {
-  const [like, setLike] = useState<boolean>(false);
+  const [liked, setLiked] = useState<boolean>(false);
   const { colorMode } = useColorMode();
   const templateAreas =
     variant === 'postPage'
@@ -40,120 +41,131 @@ export default function PostCard({
          "avatarFooter footer"`;
 
   return (
-    <Grid
-      templateAreas={templateAreas}
-      gridTemplateColumns={'auto 1fr'}
-      gridTemplateRows={'auto auto 1fr auto'}
-      gap={2}
-    >
-      <GridItem area={'avatar'}>
-        <Avatar
-          size={'sm'}
-          src="https://www.the-sun.com/wp-content/uploads/sites/6/2023/10/www-instagram-com-monkeycatluna-hl-851711797.jpg"
-        />
-      </GridItem>
-
-      <GridItem
-        area={'header'}
-        display={'flex'}
-        alignItems={'center'}
-        justifyContent={'space-between'}
+    <>
+      <Grid
+        templateAreas={templateAreas}
+        gridTemplateColumns={'auto 1fr'}
+        gridTemplateRows={'auto auto 1fr auto'}
+        gap={2}
       >
-        <Text fontWeight={700}>_itsbeenalongday</Text>
+        <GridItem area={'avatar'}>
+          <Avatar
+            size={'sm'}
+            src="https://www.the-sun.com/wp-content/uploads/sites/6/2023/10/www-instagram-com-monkeycatluna-hl-851711797.jpg"
+          />
+        </GridItem>
 
-        <Text color={useColorModeValue('gray.light', 'gray.dark')}>1d</Text>
-      </GridItem>
+        <GridItem
+          area={'header'}
+          display={'flex'}
+          alignItems={'center'}
+          justifyContent={'space-between'}
+        >
+          <Text fontWeight={600}>_itsbeenalongday</Text>
 
-      <GridItem area={'body'} display={'flex'} flexDirection={'column'} gap={2}>
-        <Text>{content}</Text>
+          <Text color={useColorModeValue('gray.light', 'gray.dark')}>1d</Text>
+        </GridItem>
 
-        {postImg && (
-          <Box>
-            <Image
-              objectFit="cover"
-              src={postImg}
-              alt="Cat meme"
-              borderRadius={'lg'}
-            />
-          </Box>
+        <GridItem
+          area={'body'}
+          display={'flex'}
+          flexDirection={'column'}
+          gap={2}
+        >
+          <Text>{content}</Text>
+
+          {postImg && (
+            <Box>
+              <Image
+                objectFit="cover"
+                src={postImg}
+                alt="Cat meme"
+                borderRadius={'lg'}
+              />
+            </Box>
+          )}
+
+          <PostActions liked={liked} setLiked={setLiked} />
+        </GridItem>
+
+        {variant !== 'postPage' && (
+          <GridItem
+            area={'line'}
+            display={'flex'}
+            alignItems={'center'}
+            justifyContent={'center'}
+          >
+            <Box
+              h={'full'}
+              w="1px"
+              bg={colorMode === 'light' ? 'secondary.light' : 'secondary.dark'}
+              my={2}
+            ></Box>
+          </GridItem>
         )}
 
-        <PostActions like={like} setLike={setLike} />
-      </GridItem>
-
-      {variant !== 'postPage' && (
-        <GridItem
-          area={'line'}
-          display={'flex'}
-          alignItems={'center'}
-          justifyContent={'center'}
-        >
-          <Box
-            h={'full'}
-            w="1px"
-            bg={colorMode === 'light' ? 'secondary.light' : 'secondary.dark'}
-            my={2}
-          ></Box>
-        </GridItem>
-      )}
-
-      {variant !== 'postPage' && (
-        <GridItem
-          area={'avatarFooter'}
-          display={'flex'}
-          alignItems={'center'}
-          justifyContent={'center'}
-          position={'relative'}
-          w={'39px'}
-          h={'35px'}
-        >
-          <Avatar
-            position={'absolute'}
-            top={0}
-            right={0}
-            size={'2xs'}
-            src="https://www.the-sun.com/wp-content/uploads/sites/6/2023/10/www-instagram-com-monkeycatluna-hl-851711797.jpg"
-          />
-          <Avatar
-            position={'absolute'}
-            top={'7px'}
-            left={'0'}
-            size={'2xs'}
-            src="https://www.the-sun.com/wp-content/uploads/sites/6/2023/10/www-instagram-com-monkeycatluna-hl-851711797.jpg"
-          />
-          <Avatar
-            position={'absolute'}
-            bottom={0}
-            left={'16px'}
-            size={'2xs'}
-            src="https://www.the-sun.com/wp-content/uploads/sites/6/2023/10/www-instagram-com-monkeycatluna-hl-851711797.jpg"
-          />
-        </GridItem>
-      )}
-
-      <GridItem area={'footer'}>
-        <Flex alignItems={'center'} gap={2}>
-          <Text
-            color={useColorModeValue('gray.light', 'gray.dark')}
-            fontSize={'sm'}
+        {variant !== 'postPage' && (
+          <GridItem
+            area={'avatarFooter'}
+            display={'flex'}
+            alignItems={'center'}
+            justifyContent={'center'}
+            position={'relative'}
+            w={'39px'}
+            h={'35px'}
           >
-            {replies} replies
-          </Text>
-          <Box
-            as="span"
-            w={0.5}
-            h={0.5}
-            borderRadius={'full'}
-            bg={useColorModeValue('gray.light', 'gray.dark')}
-          ></Box>
-          <Text
-            color={useColorModeValue('gray.light', 'gray.dark')}
-            fontSize={'sm'}
-          >
-            {likes + (like ? 1 : 0)} likes
-          </Text>
-        </Flex>
-      </GridItem>
-    </Grid>
+            <Avatar
+              position={'absolute'}
+              top={0}
+              right={0}
+              size={'2xs'}
+              src="https://www.the-sun.com/wp-content/uploads/sites/6/2023/10/www-instagram-com-monkeycatluna-hl-851711797.jpg"
+            />
+            <Avatar
+              position={'absolute'}
+              top={'7px'}
+              left={'0'}
+              size={'2xs'}
+              src="https://www.the-sun.com/wp-content/uploads/sites/6/2023/10/www-instagram-com-monkeycatluna-hl-851711797.jpg"
+            />
+            <Avatar
+              position={'absolute'}
+              bottom={0}
+              left={'16px'}
+              size={'2xs'}
+              src="https://www.the-sun.com/wp-content/uploads/sites/6/2023/10/www-instagram-com-monkeycatluna-hl-851711797.jpg"
+            />
+          </GridItem>
+        )}
+
+        <GridItem area={'footer'}>
+          <Flex alignItems={'center'} gap={2}>
+            <Text
+              color={useColorModeValue('gray.light', 'gray.dark')}
+              fontSize={'sm'}
+            >
+              {replies} replies
+            </Text>
+            <Box
+              as="span"
+              w={0.5}
+              h={0.5}
+              borderRadius={'full'}
+              bg={useColorModeValue('gray.light', 'gray.dark')}
+            ></Box>
+            <Text
+              color={useColorModeValue('gray.light', 'gray.dark')}
+              fontSize={'sm'}
+            >
+              {likes + (liked ? 1 : 0)} likes
+            </Text>
+          </Flex>
+        </GridItem>
+      </Grid>
+      <Divider
+        my={2}
+        borderColor={useColorModeValue('secondary.light', 'secondary.dark')}
+      />
+    </>
   );
 }
