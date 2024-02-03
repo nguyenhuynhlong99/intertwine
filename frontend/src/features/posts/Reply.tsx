@@ -66,7 +66,7 @@ export default function Reply({
         >
           <Text>{content}</Text>
 
-          {img && <Image src={img} />}
+          {img && <Image borderRadius={'10px'} src={img} />}
 
           {/* <PostActions liked={liked} setLiked={setLiked} /> */}
           <Box

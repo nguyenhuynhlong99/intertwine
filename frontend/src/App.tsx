@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import AppLayout from './components/AppLayout';
 import {
   ChakraProvider,
@@ -10,7 +10,9 @@ import { mode, GlobalStyleProps } from '@chakra-ui/theme-tools';
 import UserPage from './pages/UserPage';
 import PostPage from './pages/PostPage';
 import AuthPage from './pages/AuthPage';
-import { RecoilRoot } from 'recoil';
+import { useRecoilValue } from 'recoil';
+import userAtom from './atoms/userAtom';
+import HomePage from './pages/HomePage';
 
 const styles = {
   global: (props: GlobalStyleProps) => ({
@@ -129,20 +131,31 @@ const theme = extendTheme({
 });
 
 function App() {
+  const user = useRecoilValue(userAtom);
+
   return (
     <ChakraProvider theme={theme}>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-      <RecoilRoot>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<AppLayout />}>
-              <Route path=":username" element={<UserPage />} />
-              <Route path=":username/post/:pid" element={<PostPage />} />
-            </Route>
-            <Route path="/auth" element={<AuthPage />} />
-          </Routes>
-        </BrowserRouter>
-      </RecoilRoot>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<AppLayout />}>
+            <Route
+              index
+              path="/"
+              element={user ? <HomePage /> : <Navigate to="/auth" />}
+            />
+            <Route
+              path=":username"
+              element={user ? <UserPage /> : <Navigate to="/auth" />}
+            />
+            <Route path=":username/post/:pid" element={<PostPage />} />
+          </Route>
+          <Route
+            path="/auth"
+            element={!user ? <AuthPage /> : <Navigate to="/" />}
+          />
+        </Routes>
+      </BrowserRouter>
     </ChakraProvider>
   );
 }
