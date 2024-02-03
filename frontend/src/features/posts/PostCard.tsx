@@ -31,7 +31,7 @@ export default function PostCard({
   const [liked, setLiked] = useState<boolean>(false);
   const { colorMode } = useColorMode();
   const templateAreas =
-    variant === 'postPage'
+    variant === 'postDetail'
       ? `"avatar header"
           "body body"
           "footer footer"`
@@ -88,7 +88,7 @@ export default function PostCard({
           <PostActions liked={liked} setLiked={setLiked} />
         </GridItem>
 
-        {variant !== 'postPage' && (
+        {variant !== 'postDetail' && (
           <GridItem
             area={'line'}
             display={'flex'}
@@ -104,7 +104,7 @@ export default function PostCard({
           </GridItem>
         )}
 
-        {variant !== 'postPage' && (
+        {variant !== 'postDetail' && (
           <GridItem
             area={'avatarFooter'}
             display={'flex'}

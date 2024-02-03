@@ -1,7 +1,8 @@
 import { Flex, useColorMode, Link as ChakraLink, Box } from '@chakra-ui/react';
-import { Moon, SignOut, Sun } from '@phosphor-icons/react';
+import { Moon, Sun } from '@phosphor-icons/react';
 import { NavLink as ReactRouterNavLink } from 'react-router-dom';
 import AppNav from './AppNav';
+import Logout from '../features/auth/Logout';
 
 export default function Header() {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -35,12 +36,7 @@ export default function Header() {
             <Sun size={26} color="#3c6bd7" />
           )}
         </button>
-        <button className="icon-container">
-          <SignOut
-            size={26}
-            color={colorMode === 'light' ? '#2856c3' : '#3c6bd7'}
-          />
-        </button>
+        <Logout />
       </Flex>
     </Flex>
   );

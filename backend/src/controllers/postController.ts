@@ -8,14 +8,14 @@ const getPost = async (req: Request, res: Response) => {
   try {
     const post = await Post.findById(req.params.id);
 
-    if (!post) return res.status(404).json({ message: 'Post not found' });
+    if (!post) return res.status(404).json({ error: 'Post not found' });
 
     res.status(200).json({
       status: 'success',
-      data: { post },
+      post,
     });
   } catch (error) {
-    res.status(500).json({ message: getErrorMessage(error) });
+    res.status(500).json({ error: getErrorMessage(error) });
     console.error(error);
   }
 };
@@ -25,21 +25,21 @@ const createPost = async (req: IGetUserAuthInfoRequest, res: Response) => {
     const { postedBy, text, img } = req.body;
 
     if (!postedBy || !text)
-      return res.status(400).json({ message: 'Please fill all the fields' });
+      return res.status(400).json({ error: 'Please fill all the fields' });
 
     const user = await User.findById(postedBy);
 
-    if (!user) return res.status(400).json({ message: 'User not found' });
+    if (!user) return res.status(400).json({ error: 'User not found' });
 
     if (user._id.toString() !== req.user._id.toString()) {
-      return res.status(401).json({ message: 'Unauthorized to create post' });
+      return res.status(401).json({ error: 'Unauthorized to create post' });
     }
 
     const maxLength = 500;
     if (text.length > maxLength) {
       return res
         .status(400)
-        .json({ message: `Text muse be less than ${maxLength} characters` });
+        .json({ error: `Text muse be less than ${maxLength} characters` });
     }
 
     const post = await Post.create({
@@ -51,15 +51,14 @@ const createPost = async (req: IGetUserAuthInfoRequest, res: Response) => {
     if (post) {
       res.status(201).json({
         status: 'success',
-        data: {
-          post,
-        },
+
+        post,
       });
     } else {
-      res.status(400).json({ message: 'Invalid post data' });
+      res.status(400).json({ error: 'Invalid post data' });
     }
   } catch (error) {
-    res.status(500).json({ message: getErrorMessage(error) });
+    res.status(500).json({ error: getErrorMessage(error) });
     console.error(error);
   }
 };
@@ -68,17 +67,17 @@ const deletePost = async (req: IGetUserAuthInfoRequest, res: Response) => {
   try {
     const post = await Post.findById(req.params.id);
 
-    if (!post) return res.status(404).json({ message: 'Post not found' });
+    if (!post) return res.status(404).json({ error: 'Post not found' });
 
     if (post.postedBy.toString() !== req.user._id.toString()) {
-      return res.status(401).json({ message: 'Unauthorized to delete post' });
+      return res.status(401).json({ error: 'Unauthorized to delete post' });
     }
 
     await Post.findByIdAndDelete(req.params.id);
 
     res.status(204).json({ message: 'Deleted post successfully' });
   } catch (error) {
-    res.status(500).json({ message: getErrorMessage(error) });
+    res.status(500).json({ error: getErrorMessage(error) });
     console.error(error);
   }
 };
@@ -88,7 +87,7 @@ const likeUnlikePost = async (req: IGetUserAuthInfoRequest, res: Response) => {
     const userId = req.user._id;
     const post = await Post.findById(req.params.id);
 
-    if (!post) return res.status(404).json({ message: 'Post not found' });
+    if (!post) return res.status(404).json({ error: 'Post not found' });
 
     if (post.likes?.includes(userId)) {
       await Post.findByIdAndUpdate(req.params.id, {
@@ -107,7 +106,7 @@ const likeUnlikePost = async (req: IGetUserAuthInfoRequest, res: Response) => {
       });
     }
   } catch (error) {
-    res.status(500).json({ message: getErrorMessage(error) });
+    res.status(500).json({ error: getErrorMessage(error) });
     console.error(error);
   }
 };
@@ -135,7 +134,7 @@ const replyToPost = async (req: IGetUserAuthInfoRequest, res: Response) => {
 
     res.status(200).json({ message: 'Replied to post successfully', post });
   } catch (error) {
-    res.status(500).json({ message: getErrorMessage(error) });
+    res.status(500).json({ error: getErrorMessage(error) });
     console.error(error);
   }
 };
@@ -145,7 +144,7 @@ const getFeedPosts = async (req: IGetUserAuthInfoRequest, res: Response) => {
     const userId = req.user._id;
     const user = await User.findById(userId);
 
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!user) return res.status(404).json({ error: 'User not found' });
 
     const following = user.following;
 
@@ -153,9 +152,9 @@ const getFeedPosts = async (req: IGetUserAuthInfoRequest, res: Response) => {
       createdAt: -1,
     });
 
-    res.status(200).json({ status: 'success', data: { feed } });
+    res.status(200).json({ status: 'success', feed });
   } catch (error) {
-    res.status(500).json({ message: getErrorMessage(error) });
+    res.status(500).json({ error: getErrorMessage(error) });
     console.error(error);
   }
 };

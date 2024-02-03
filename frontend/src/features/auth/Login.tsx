@@ -17,13 +17,45 @@ import { Eye, EyeSlash } from '@phosphor-icons/react';
 import { useState } from 'react';
 import { useSetRecoilState } from 'recoil';
 import authScreenAtom from '../../atoms/authAtom';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import InputErrorMessage from '../../components/InputErrorMessage';
+import { login } from '../../services/apiAuth';
+import useShowToast from '../../hooks/useShowToast';
+import userAtom from '../../atoms/userAtom';
+
+interface Inputs {
+  username: string;
+  password: string;
+}
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const setAuthScreen = useSetRecoilState(authScreenAtom);
+  const setUser = useSetRecoilState(userAtom);
+  const { showToast } = useShowToast();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Inputs>();
 
   const accentColor = useColorModeValue('accent.light', 'accent.dark');
   const secondaryColor = useColorModeValue('secondary.light', 'secondary.dark');
+
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    try {
+      const userData = await login(data);
+      if (userData?.error) {
+        showToast('Failed to log in', userData?.error, 'error');
+        return;
+      }
+      localStorage.setItem('intertwine-user', JSON.stringify(userData));
+      setUser(userData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <Flex
@@ -51,16 +83,37 @@ export default function Login() {
           bg={useColorModeValue('support.light', 'support.dark')}
           boxShadow={'lg'}
           p={8}
+          as="form"
+          onSubmit={handleSubmit(onSubmit)}
         >
           <Stack spacing={4}>
-            <FormControl id="username" isRequired>
+            <FormControl
+              id="username"
+              isRequired
+              isInvalid={errors?.username?.message ? true : false}
+            >
               <FormLabel>Username</FormLabel>
-              <Input type="text" />
+              <Input
+                type="text"
+                {...register('username', {
+                  required: 'This field is required',
+                })}
+              />
+              <InputErrorMessage message={errors?.username?.message} />
             </FormControl>
-            <FormControl id="password" isRequired>
+            <FormControl
+              id="password"
+              isRequired
+              isInvalid={errors?.password?.message ? true : false}
+            >
               <FormLabel>Password</FormLabel>
               <InputGroup>
-                <Input type={showPassword ? 'text' : 'password'} />
+                <Input
+                  type={showPassword ? 'text' : 'password'}
+                  {...register('password', {
+                    required: 'This field is required',
+                  })}
+                />
                 <InputRightElement h={'full'}>
                   <Button
                     bg={'transparent'}
@@ -76,9 +129,11 @@ export default function Login() {
                   </Button>
                 </InputRightElement>
               </InputGroup>
+              <InputErrorMessage message={errors?.password?.message} />
             </FormControl>
             <Stack spacing={10} pt={2}>
               <Button
+                type="submit"
                 loadingText="Submitting"
                 size="lg"
                 bg={useColorModeValue('secondary.light', 'secondary.dark')}

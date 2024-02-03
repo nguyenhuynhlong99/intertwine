@@ -20,10 +20,13 @@ import { useSetRecoilState } from 'recoil';
 import authScreenAtom from '../../atoms/authAtom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import InputErrorMessage from '../../components/InputErrorMessage';
+import { signup } from '../../services/apiAuth';
+import useShowToast from '../../hooks/useShowToast';
+import userAtom from '../../atoms/userAtom';
 
 type Inputs = {
   username: string;
-  fullName: string;
+  name: string;
   email: string;
   password: string;
 };
@@ -31,6 +34,8 @@ type Inputs = {
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const setAuthScreen = useSetRecoilState(authScreenAtom);
+  const setUser = useSetRecoilState(userAtom);
+  const { showToast } = useShowToast();
 
   const {
     register,
@@ -40,8 +45,20 @@ export default function SignUp() {
 
   const accentColor = useColorModeValue('accent.light', 'accent.dark');
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    try {
+      const userData = await signup(data);
+      if (userData?.error) {
+        showToast('Failed to sign up', userData?.error, 'error');
+        return;
+      }
+
+      localStorage.setItem('intertwine-user', JSON.stringify(userData));
+      setUser(userData);
+      setAuthScreen('login');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -75,21 +92,17 @@ export default function SignUp() {
                 <FormControl
                   id="fullName"
                   isRequired
-                  isInvalid={errors.fullName?.message ? true : false}
+                  isInvalid={errors.name?.message ? true : false}
                 >
                   <FormLabel>Full Name</FormLabel>
                   <Input
                     type="text"
-                    {...register('fullName', {
+                    {...register('name', {
                       required: 'This field is required',
-                      minLength: {
-                        value: 8,
-                        message: 'Minimum 8',
-                      },
                     })}
                   />
 
-                  <InputErrorMessage message={errors.fullName?.message} />
+                  <InputErrorMessage message={errors.name?.message} />
                 </FormControl>
               </Box>
               <Box>
@@ -104,8 +117,8 @@ export default function SignUp() {
                     {...register('username', {
                       required: 'This field is required',
                       minLength: {
-                        value: 8,
-                        message: 'Minimum 8',
+                        value: 4,
+                        message: 'Required at least 4 characters',
                       },
                     })}
                   />
@@ -123,6 +136,10 @@ export default function SignUp() {
                 type="email"
                 {...register('email', {
                   required: 'This field is required',
+                  pattern: {
+                    value: /\S+@\S+\.\S+/,
+                    message: 'Please provide a valid email address',
+                  },
                 })}
               />
               <InputErrorMessage message={errors.email?.message} />
@@ -138,11 +155,18 @@ export default function SignUp() {
                   type={showPassword ? 'text' : 'password'}
                   {...register('password', {
                     required: 'This field is required',
+                    minLength: {
+                      value: 8,
+                      message: 'Password needs a minimum of 8 characters',
+                    },
                   })}
                 />
                 <InputRightElement h={'full'}>
                   <Button
-                    variant={'ghost'}
+                    bg={'transparent'}
+                    _hover={{
+                      bg: 'transparent',
+                    }}
                     onClick={() =>
                       setShowPassword((showPassword) => !showPassword)
                     }
