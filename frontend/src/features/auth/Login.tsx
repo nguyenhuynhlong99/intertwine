@@ -53,6 +53,7 @@ export default function Login() {
       localStorage.setItem('intertwine-user', JSON.stringify(userData));
       setUser(userData);
     } catch (error) {
+      showToast('Error', 'Failed to log in', 'error');
       console.error(error);
     }
   };

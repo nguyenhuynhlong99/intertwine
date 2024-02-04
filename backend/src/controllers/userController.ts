@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Types } from 'mongoose';
 import { IGetUserAuthInfoRequest } from 'middlewares/protectRoute.js';
+import { v2 as cloudinary } from 'cloudinary';
 
 const createTokenSetCookie = (userId: Types.ObjectId, res: Response) => {
   const token = jwt.sign(
@@ -36,6 +37,8 @@ const signupUser = async (req: Request, res: Response) => {
       name: user.name,
       email: user.email,
       username: user.username,
+      bio: user.bio,
+      profilePic: user.profilePic,
     });
   } catch (error) {
     res.status(400).json({ error: getErrorMessage(error) });
@@ -55,6 +58,8 @@ const loginUser = async (req: Request, res: Response) => {
       name: user.name,
       email: user.email,
       username: user.username,
+      bio: user.bio,
+      profilePic: user.profilePic,
     });
   } catch (error) {
     res.status(400).json({ error: getErrorMessage(error) });
@@ -117,7 +122,8 @@ const followUnfollowUser = async (
 const updateUser = async (req: IGetUserAuthInfoRequest, res: Response) => {
   try {
     const userId = req.user._id;
-    const { name, email, username, password, profilePic, bio } = req.body;
+    const { name, email, username, password, bio } = req.body;
+    let { profilePic } = req.body;
 
     let user = await User.findById(userId).select('+password');
 
@@ -129,9 +135,17 @@ const updateUser = async (req: IGetUserAuthInfoRequest, res: Response) => {
         .json({ error: "You can not update other user's profile" });
 
     if (password) {
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
+      const hashedPassword = await User.hashPassword(password);
       user.password = hashedPassword;
+    }
+
+    if (profilePic) {
+      if (user.profilePic) {
+        const userProfilePic = user.profilePic.split('/').pop()?.split('.')[0];
+        await cloudinary.uploader.destroy(userProfilePic || '');
+      }
+      const uploadedResponse = await cloudinary.uploader.upload(profilePic);
+      profilePic = uploadedResponse.secure_url;
     }
 
     user.name = name || user.name;
@@ -140,15 +154,15 @@ const updateUser = async (req: IGetUserAuthInfoRequest, res: Response) => {
     user.profilePic = profilePic || user.profilePic;
     user.bio = bio || user.bio;
 
-    const updatedUser = await user.save();
-    user = await User.findById(updatedUser._id);
+    user = await user.save();
 
     res.status(200).json({
-      status: 'success',
-      message: 'Updated profile successfully',
-      data: {
-        user,
-      },
+      _id: user?._id,
+      name: user?.name,
+      email: user?.email,
+      username: user?.username,
+      bio: user?.bio,
+      profilePic: user?.profilePic,
     });
   } catch (error) {
     res.status(500).json({ error: getErrorMessage(error) });

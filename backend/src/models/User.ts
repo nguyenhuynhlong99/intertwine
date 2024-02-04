@@ -16,6 +16,7 @@ interface IUser {
 interface UserModel extends mongoose.Model<IUser> {
   signUp(email: string, password: string, username: string, name: string): any;
   login(username: string, password: string): any;
+  hashPassword(password: string): any;
 }
 
 const userSchema = new mongoose.Schema<IUser, UserModel>(
@@ -62,10 +63,16 @@ const userSchema = new mongoose.Schema<IUser, UserModel>(
   }
 );
 
-userSchema.pre<IUser>('save', async function (next) {
+// userSchema.pre<IUser>('save', async function (next) {
+//   const salt = await bcrypt.genSalt(10);
+//   this.password = await bcrypt.hash(this.password, salt);
+//   next();
+// });
+
+userSchema.static('hashPassword', async function hashPassword(password) {
   const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
+  const hashedPassword = await bcrypt.hash(password, salt);
+  return hashedPassword;
 });
 
 userSchema.static(
@@ -80,9 +87,11 @@ userSchema.static(
     const exists = await User.findOne({ $or: [{ email }, { username }] });
     if (exists) throw Error('Email or username already existed');
 
+    const hashedPassword = await User.hashPassword(password);
+
     const user = await this.create({
       email,
-      password,
+      password: hashedPassword,
       username,
       name,
     });

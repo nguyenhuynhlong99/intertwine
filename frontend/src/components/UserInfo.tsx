@@ -1,7 +1,6 @@
 import {
   Avatar,
   Box,
-  Button,
   Flex,
   Tab,
   TabIndicator,
@@ -10,10 +9,11 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
+import EditProfile from '../features/auth/EditProfile';
 
 export default function UserInfo() {
   const activeTab = useColorModeValue('accent.light', 'accent.dark');
-  const secondaryColor = useColorModeValue('secondary.light', 'secondary.dark');
+  // const secondaryColor = useColorModeValue('secondary.light', 'secondary.dark');
   const grayColor = useColorModeValue('gray.light', 'gray.dark');
 
   return (
@@ -55,16 +55,7 @@ export default function UserInfo() {
         0 followers
       </Text>
 
-      <Button
-        bg={'transparent'}
-        border={'1px solid'}
-        borderColor={secondaryColor}
-        w="full"
-        borderRadius={'10px'}
-        _hover={{ bg: 'transparent' }}
-      >
-        Edit profile
-      </Button>
+      <EditProfile />
 
       <Tabs marginTop={4} position="relative">
         <TabList borderColor={grayColor} borderBottom={'1px solid'}>

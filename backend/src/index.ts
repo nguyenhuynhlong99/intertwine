@@ -1,5 +1,4 @@
 import express from 'express';
-// import http from 'http';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
@@ -8,6 +7,7 @@ import compression from 'compression';
 import connectDB from '../src/db/connectDB.js';
 import userRoutes from './routes/userRoutes.js';
 import postRoutes from './routes/postRoutes.js';
+import { v2 as cloudinary } from 'cloudinary';
 
 dotenv.config();
 connectDB();
@@ -22,6 +22,12 @@ app.use(
 
 const PORT = process.env.PORT || 6000;
 
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -30,8 +36,6 @@ app.use(compression());
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
-
-// const server = http.createServer(app);
 
 app.listen(PORT, () =>
   console.log(`Server started at http://localhost:${PORT}`)
