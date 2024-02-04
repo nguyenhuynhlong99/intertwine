@@ -21,6 +21,7 @@ export default function Logout() {
       localStorage.removeItem('intertwine-user');
       setUser(null);
     } catch (error) {
+      showToast('Error', 'Failed to log out', 'error');
       console.error(error);
     }
   }

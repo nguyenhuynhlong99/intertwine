@@ -57,6 +57,7 @@ export default function SignUp() {
       setUser(userData);
       setAuthScreen('login');
     } catch (error) {
+      showToast('Error', 'Failed to sign up', 'error');
       console.log(error);
     }
   };
@@ -157,7 +158,7 @@ export default function SignUp() {
                     required: 'This field is required',
                     minLength: {
                       value: 8,
-                      message: 'Password needs a minimum of 8 characters',
+                      message: 'Required at least 8 characters',
                     },
                   })}
                 />
