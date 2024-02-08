@@ -8,13 +8,9 @@ import { IGetUserAuthInfoRequest } from 'middlewares/protectRoute.js';
 import { v2 as cloudinary } from 'cloudinary';
 
 const createTokenSetCookie = (userId: Types.ObjectId, res: Response) => {
-  const token = jwt.sign(
-    { userId: userId.toString() },
-    String(process.env.JWT_SECRET),
-    {
-      expiresIn: '3d',
-    }
-  );
+  const token = jwt.sign({ userId }, String(process.env.JWT_SECRET), {
+    expiresIn: '3d',
+  });
 
   res.cookie('jwt', token, {
     httpOnly: true,
@@ -32,13 +28,17 @@ const signupUser = async (req: Request, res: Response) => {
     const user = await User.signUp(email, password, username, name);
 
     createTokenSetCookie(user._id, res);
+
+    user.password = null;
+
     res.status(201).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      username: user.username,
-      bio: user.bio,
-      profilePic: user.profilePic,
+      // _id: user._id,
+      // name: user.name,
+      // email: user.email,
+      // username: user.username,
+      // bio: user.bio,
+      // profilePic: user.profilePic,
+      user,
     });
   } catch (error) {
     res.status(400).json({ error: getErrorMessage(error) });
@@ -53,13 +53,16 @@ const loginUser = async (req: Request, res: Response) => {
 
     createTokenSetCookie(user._id, res);
 
+    user.password = null;
+
     res.status(200).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      username: user.username,
-      bio: user.bio,
-      profilePic: user.profilePic,
+      // _id: user._id,
+      // name: user.name,
+      // email: user.email,
+      // username: user.username,
+      // bio: user.bio,
+      // profilePic: user.profilePic,
+      user,
     });
   } catch (error) {
     res.status(400).json({ error: getErrorMessage(error) });
@@ -68,11 +71,13 @@ const loginUser = async (req: Request, res: Response) => {
 };
 
 const logoutUser = (req: Request, res: Response) => {
-  res.cookie('jwt', '', {
-    maxAge: 1,
-    httpOnly: true,
-  });
-  res.status(200).json({ status: 'success' });
+  try {
+    res.cookie('jwt', '', { maxAge: 1 });
+    res.status(200).json({ message: 'User logged out successfully' });
+  } catch (error) {
+    res.status(500).json({ error: getErrorMessage(error) });
+    console.log(error);
+  }
 };
 
 const followUnfollowUser = async (
@@ -177,10 +182,24 @@ const getUserProfile = async (req: Request, res: Response) => {
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     res.status(200).json({
-      status: 'success',
       data: {
         user,
       },
+    });
+  } catch (error) {
+    res.status(500).json({ error: getErrorMessage(error) });
+    console.error('Error in updateUser: ', getErrorMessage(error));
+  }
+};
+
+const getCurrentUser = async (req: IGetUserAuthInfoRequest, res: Response) => {
+  try {
+    const userId = req.user._id;
+    const user = await User.findById(userId).exec();
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    res.status(200).json({
+      user,
     });
   } catch (error) {
     res.status(500).json({ error: getErrorMessage(error) });
@@ -195,4 +214,5 @@ export {
   followUnfollowUser,
   updateUser,
   getUserProfile,
+  getCurrentUser,
 };

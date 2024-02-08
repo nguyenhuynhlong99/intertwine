@@ -2,7 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
-import cors from 'cors';
+// import cors from 'cors';
 import compression from 'compression';
 import connectDB from '../src/db/connectDB.js';
 import userRoutes from './routes/userRoutes.js';
@@ -14,11 +14,11 @@ connectDB();
 
 const app = express();
 
-app.use(
-  cors({
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     credentials: true,
+//   })
+// );
 
 const PORT = process.env.PORT || 6000;
 

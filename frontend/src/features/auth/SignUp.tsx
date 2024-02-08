@@ -20,9 +20,7 @@ import { useSetRecoilState } from 'recoil';
 import authScreenAtom from '../../atoms/authAtom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import InputErrorMessage from '../../components/InputErrorMessage';
-import { signup } from '../../services/apiAuth';
-import useShowToast from '../../hooks/useShowToast';
-import userAtom from '../../atoms/userAtom';
+import useSignup from './useSignup';
 
 type Inputs = {
   username: string;
@@ -34,32 +32,25 @@ type Inputs = {
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const setAuthScreen = useSetRecoilState(authScreenAtom);
-  const setUser = useSetRecoilState(userAtom);
-  const { showToast } = useShowToast();
+
+  const { signup } = useSignup();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<Inputs>();
 
   const accentColor = useColorModeValue('accent.light', 'accent.dark');
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    try {
-      const userData = await signup(data);
-      if (userData?.error) {
-        showToast('Failed to sign up', userData?.error, 'error');
-        return;
-      }
-
-      localStorage.setItem('intertwine-user', JSON.stringify(userData));
-      setUser(userData);
-      setAuthScreen('login');
-    } catch (error) {
-      showToast('Error', 'Failed to sign up', 'error');
-      console.log(error);
-    }
+    signup(data, {
+      onSuccess: () => {
+        reset();
+        setAuthScreen('login');
+      },
+    });
   };
 
   return (

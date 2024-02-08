@@ -89,12 +89,12 @@ userSchema.static(
 
     const hashedPassword = await User.hashPassword(password);
 
-    const user = await this.create({
+    const user = await new User({
       email,
       password: hashedPassword,
       username,
       name,
-    });
+    }).save();
 
     return user;
   }
