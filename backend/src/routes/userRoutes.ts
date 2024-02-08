@@ -2,6 +2,7 @@ import express from 'express';
 import protectRoute from '../middlewares/protectRoute.js';
 import {
   followUnfollowUser,
+  getCurrentUser,
   getUserProfile,
   loginUser,
   logoutUser,
@@ -11,14 +12,13 @@ import {
 
 const router = express.Router();
 
-router.get('/profile/:username', getUserProfile);
 router.post('/signup', signupUser);
 router.post('/login', loginUser);
-router.get('/logout', logoutUser);
+router.post('/logout', logoutUser);
 
-router.use(protectRoute);
-
-router.patch('/follow/:id', followUnfollowUser);
-router.patch('/update/:id', updateUser);
+router.patch('/follow/:id', protectRoute, followUnfollowUser);
+router.patch('/update/:id', protectRoute, updateUser);
+router.get('/whoami', protectRoute, getCurrentUser);
+router.get('/:username', getUserProfile);
 
 export default router;

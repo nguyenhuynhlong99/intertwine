@@ -21,15 +21,15 @@ const protectRoute = async (
 
     if (!token)
       return res.status(401).json({
-        message: 'You are not logged in! Please log in to get access.',
+        message: 'Unauthorized',
       });
 
-    const { userId } = jwt.verify(
+    const decoded = jwt.verify(
       token,
       String(process.env.JWT_SECRET)
     ) as JwtPayload;
 
-    const user = await User.findById(userId);
+    const user = await User.findById(decoded.userId);
 
     req.user = user;
 

@@ -11,8 +11,12 @@ import {
   useLocation,
   useNavigate,
 } from 'react-router-dom';
+import { useCurrentUser } from '../features/auth/useCurrentUser';
 
 export default function AppNav() {
+  const {
+    user: { username },
+  } = useCurrentUser();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -89,7 +93,7 @@ export default function AppNav() {
         </Button>
         <ChakraLink
           as={ReactRouterNavLink}
-          to="/sad"
+          to={`/${username}`}
           h={'full'}
           display={'flex'}
           alignItems={'center'}

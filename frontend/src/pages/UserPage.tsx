@@ -1,21 +1,39 @@
 import UserInfo from '../components/UserInfo';
 import { Container } from '@chakra-ui/react';
 import PostList from '../features/posts/PostList';
-import { useEffect } from 'react';
-import { getPost } from '../services/apiPost';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { getProfile } from '../services/apiUser';
+import useShowToast from '../hooks/useShowToast';
 
 export default function UserPage() {
+  const [user, setUser] = useState();
+  const { username } = useParams();
+  const { showToast } = useShowToast();
+
   useEffect(() => {
-    async function fetchPost() {
-      const data = await getPost('65b6f34f2dcd760794e39c90');
-      console.log(data);
+    async function getUser() {
+      try {
+        const data = await getProfile(String(username));
+
+        if (data?.error) {
+          showToast('Failed to get user data', data.error, 'error');
+          return;
+        }
+        setUser(data.data.user);
+      } catch (error) {
+        console.log(error);
+      }
     }
-    fetchPost();
-  }, []);
+    getUser();
+  }, [username, showToast]);
+  console.log(user);
+  // Dont forget to add not found page
+  if (!user) return null;
 
   return (
     <Container maxW="572px">
-      <UserInfo />
+      <UserInfo user={user} />
 
       <PostList />
     </Container>

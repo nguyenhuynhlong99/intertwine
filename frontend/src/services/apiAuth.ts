@@ -12,71 +12,35 @@ interface LoginBody {
   password: string;
 }
 
-interface UpdateProfileBody {
-  name?: string;
-  username?: string;
-  password?: string;
-  profilePic?: string | ArrayBuffer | null;
-  bio?: string;
-  email?: string;
-}
-
 export const signup = async (user: SignUpBody) => {
-  try {
-    const res = await axios.post('/api/users/signup', user);
-    return res.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.log(error.status);
-      console.error(error.response);
-      return error.response?.data;
-    } else {
-      console.error(error);
-    }
-  }
+  // try {
+  //   const res = await axios.post('/api/users/signup', user);
+  //   return res.data;
+  // } catch (error) {
+  //   if (axios.isAxiosError(error)) {
+  //     console.log(error.status);
+  //     console.error(error.response);
+  //     return error.response?.data;
+  //   } else {
+  //     console.error(error);
+  //   }
+  // }
+  // Don't need try catch because of React Query
+  const res = await axios.post('/api/users/signup', user);
+  return res.data;
 };
 
 export const login = async (user: LoginBody) => {
-  try {
-    const res = await axios.post('/api/users/login', user);
-    return res.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.log(error.status);
-      console.error(error.response);
-      return error.response?.data;
-    } else {
-      console.error(error);
-    }
-  }
+  const res = await axios.post('/api/users/login', user);
+  return res.data;
 };
 
 export const logout = async () => {
-  try {
-    const res = await axios.get('/api/users/logout');
-    return res.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.log(error.status);
-      console.error(error.response);
-      return error.response?.data;
-    } else {
-      console.error(error);
-    }
-  }
+  const res = await axios.post('/api/users/logout');
+  return res.data;
 };
 
-export const updateProfile = async (id: string, user: UpdateProfileBody) => {
-  try {
-    const res = await axios.patch(`/api/users/update/${id}`, user);
-    return res.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.log(error.status);
-      console.error(error.response);
-      return error.response?.data;
-    } else {
-      console.error(error);
-    }
-  }
+export const getCurrentUser = async () => {
+  const res = await axios.get('/api/users/whoami');
+  return res.data;
 };

@@ -17,7 +17,7 @@ import userAtom from '../../atoms/userAtom';
 import { useRef } from 'react';
 import useImgPreview from '../../hooks/useImgPreview';
 import useShowToast from '../../hooks/useShowToast';
-import { updateProfile } from '../../services/apiAuth';
+import { updateProfile } from '../../services/apiUser';
 
 interface Inputs {
   name: string;

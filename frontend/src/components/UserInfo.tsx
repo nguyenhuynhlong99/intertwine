@@ -10,10 +10,31 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import EditProfile from '../features/auth/EditProfile';
+import { useRecoilValue } from 'recoil';
+import userAtom from '../atoms/userAtom';
+import Follow from '../features/posts/Follow';
+// import { useCurrentUser } from '../features/auth/useCurrentUser';
 
-export default function UserInfo() {
+interface User {
+  _id: string;
+  name: string;
+  bio: string;
+  username: string;
+  profilePic: string;
+  followers: string[];
+  following: string[];
+}
+
+interface Props {
+  user: User;
+}
+
+export default function UserInfo({ user }: Props) {
+  const currentUser = useRecoilValue(userAtom);
+  // const { currentUser: userData } = useCurrentUser();
+  // console.log(userData);
+
   const activeTab = useColorModeValue('accent.light', 'accent.dark');
-  // const secondaryColor = useColorModeValue('secondary.light', 'secondary.dark');
   const grayColor = useColorModeValue('gray.light', 'gray.dark');
 
   return (
@@ -21,10 +42,10 @@ export default function UserInfo() {
       <Flex justifyContent={'space-between'}>
         <Box>
           <Text fontSize="2xl" fontWeight={700}>
-            Damian
+            {user.name}
           </Text>
           <Flex gap={1} alignItems="center">
-            <Text>_itsbeenalongday</Text>
+            <Text>{user.username}</Text>
             <Text
               fontSize="xs"
               bg={useColorModeValue('support.light', 'support.dark')}
@@ -37,8 +58,8 @@ export default function UserInfo() {
         </Box>
         <Box>
           <Avatar
-            name="Damian"
-            src="https://www.the-sun.com/wp-content/uploads/sites/6/2023/10/www-instagram-com-monkeycatluna-hl-851711797.jpg"
+            name={user.name}
+            src={user.profilePic || ''}
             size={{
               base: 'md',
               md: 'lg',
@@ -47,15 +68,19 @@ export default function UserInfo() {
           />
         </Box>
       </Flex>
-      <Text my={2}>Probably just here to share my favorite songs🎧</Text>
+      <Text my={2}>{user.bio}</Text>
       <Text
         marginBottom={7}
         color={useColorModeValue('gray.light', 'gray.dark')}
       >
-        0 followers
+        {user.followers.length} followers
       </Text>
 
-      <EditProfile />
+      {user.username === currentUser.username ? (
+        <EditProfile />
+      ) : (
+        <Follow user={user} />
+      )}
 
       <Tabs marginTop={4} position="relative">
         <TabList borderColor={grayColor} borderBottom={'1px solid'}>
