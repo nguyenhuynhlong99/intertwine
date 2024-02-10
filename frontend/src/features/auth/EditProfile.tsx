@@ -12,23 +12,38 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useRecoilState } from 'recoil';
-import userAtom from '../../atoms/userAtom';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import useImgPreview from '../../hooks/useImgPreview';
 import useShowToast from '../../hooks/useShowToast';
-import { updateProfile } from '../../services/apiUser';
+// import { updateProfile } from '../../services/apiUser';
+import { useEditProfile } from './useEditProfile';
+// import { getUser } from '../../utils/userLocalStorage';
+// import { useUser } from './useUser';
 
 interface Inputs {
+  _id?: string;
   name: string;
   username: string;
   bio: string;
   password: string;
+  profilePic?: string;
 }
 
-export default function EditProfile() {
-  const [user, setUser] = useRecoilState(userAtom);
-  const { _id: userId, ...userValues } = user;
+interface Props {
+  user: Inputs;
+}
+
+export default function EditProfile({ user }: Props) {
+  // const username = getUser().username;
+  // const userId = getUser()?._id;
+  // const userData = useUser(username);
+  // const user = userData?.user;
+  // const isPending = userData?.isPending;
+  // const { _id: userId, ...userValues } = user ? user : {};
+  const { editProfile } = useEditProfile(user?.username);
+  // console.log(userData?.user);
+  console.log(user);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const fileRef = useRef<HTMLInputElement | null>(null);
   const { handleImgChange, imgPreview, resetImgPreview } = useImgPreview();
@@ -40,7 +55,7 @@ export default function EditProfile() {
     reset,
     // formState: { errors },
   } = useForm<Inputs>({
-    defaultValues: userValues,
+    defaultValues: user,
   });
 
   const secondaryColor = useColorModeValue('secondary.light', 'secondary.dark');
@@ -56,37 +71,30 @@ export default function EditProfile() {
       return;
     }
 
-    data.name = data.name || userValues.name;
-    data.username = data.username || userValues.username;
-    data.bio = data.bio || userValues.bio;
+    data.name = data.name || user.name;
+    data.username = data.username || user.username;
+    data.bio = data.bio || user.bio;
     data.password = data.password || '';
 
-    try {
-      const userData = await updateProfile(userId, {
-        ...data,
-        profilePic: imgPreview,
-      });
-
-      if (userData?.error) {
-        showToast('Failed to update profile', userData?.error, 'error');
-        return;
+    editProfile(
+      { id: String(user._id), user: { ...data, profilePic: imgPreview } },
+      {
+        onSuccess: () => {
+          onClose();
+        },
       }
-
-      showToast('Success', 'Updated profile successfully', 'success');
-      setUser(userData);
-      localStorage.setItem('intertwine-user', JSON.stringify(userData));
-      reset(userData);
-      //   console.log(data);
-    } catch (error) {
-      showToast('Error', 'Failed to update profile', 'error');
-    }
+    );
   };
 
   function closeModal() {
     onClose();
-    reset();
+    reset(user);
     resetImgPreview();
   }
+
+  useEffect(() => {
+    if (user) reset(user);
+  }, [user, reset]);
 
   return (
     <>
@@ -123,7 +131,10 @@ export default function EditProfile() {
               alignItems={'center'}
               gap={4}
             >
-              <Avatar size={'xl'} src={imgPreview || user.profilePic} />
+              <Avatar
+                size={'xl'}
+                src={String(user?.profilePic || imgPreview)}
+              />
               <Button onClick={() => fileRef.current?.click()}>
                 Change avatar
               </Button>

@@ -161,13 +161,16 @@ const updateUser = async (req: IGetUserAuthInfoRequest, res: Response) => {
 
     user = await user.save();
 
+    user = await User.findById(user._id);
+
     res.status(200).json({
-      _id: user?._id,
-      name: user?.name,
-      email: user?.email,
-      username: user?.username,
-      bio: user?.bio,
-      profilePic: user?.profilePic,
+      // _id: user?._id,
+      // name: user?.name,
+      // email: user?.email,
+      // username: user?.username,
+      // bio: user?.bio,
+      // profilePic: user?.profilePic,
+      user,
     });
   } catch (error) {
     res.status(500).json({ error: getErrorMessage(error) });
@@ -182,9 +185,7 @@ const getUserProfile = async (req: Request, res: Response) => {
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     res.status(200).json({
-      data: {
-        user,
-      },
+      user,
     });
   } catch (error) {
     res.status(500).json({ error: getErrorMessage(error) });

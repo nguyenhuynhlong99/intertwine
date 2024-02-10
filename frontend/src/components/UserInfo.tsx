@@ -10,29 +10,16 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import EditProfile from '../features/auth/EditProfile';
-import { useRecoilValue } from 'recoil';
-import userAtom from '../atoms/userAtom';
-import Follow from '../features/posts/Follow';
-// import { useCurrentUser } from '../features/auth/useCurrentUser';
+import Follow from '../features/user/Follow';
+import { useUser } from '../features/auth/useUser';
+import { useParams } from 'react-router-dom';
+import { getUser } from '../utils/userLocalStorage';
 
-interface User {
-  _id: string;
-  name: string;
-  bio: string;
-  username: string;
-  profilePic: string;
-  followers: string[];
-  following: string[];
-}
-
-interface Props {
-  user: User;
-}
-
-export default function UserInfo({ user }: Props) {
-  const currentUser = useRecoilValue(userAtom);
-  // const { currentUser: userData } = useCurrentUser();
-  // console.log(userData);
+export default function UserInfo() {
+  const { username } = useParams();
+  const currentUser = getUser();
+  const userData = useUser(String(username));
+  const user = userData?.user;
 
   const activeTab = useColorModeValue('accent.light', 'accent.dark');
   const grayColor = useColorModeValue('gray.light', 'gray.dark');
@@ -42,10 +29,10 @@ export default function UserInfo({ user }: Props) {
       <Flex justifyContent={'space-between'}>
         <Box>
           <Text fontSize="2xl" fontWeight={700}>
-            {user.name}
+            {user?.name}
           </Text>
           <Flex gap={1} alignItems="center">
-            <Text>{user.username}</Text>
+            <Text>{user?.username}</Text>
             <Text
               fontSize="xs"
               bg={useColorModeValue('support.light', 'support.dark')}
@@ -57,30 +44,37 @@ export default function UserInfo({ user }: Props) {
           </Flex>
         </Box>
         <Box>
-          <Avatar
-            name={user.name}
-            src={user.profilePic || ''}
-            size={{
-              base: 'md',
-              md: 'lg',
-              lg: 'xl',
-            }}
-          />
+          {user?.profilePic ? (
+            <Avatar
+              name={user?.name}
+              src={user?.profilePic || 'https://bit.ly/broken-link'}
+              size={{
+                base: 'md',
+                md: 'lg',
+                lg: 'xl',
+              }}
+            />
+          ) : (
+            <Avatar
+              src={'https://bit.ly/broken-link'}
+              size={{
+                base: 'md',
+                md: 'lg',
+                lg: 'xl',
+              }}
+            />
+          )}
         </Box>
       </Flex>
-      <Text my={2}>{user.bio}</Text>
+      <Text my={2}>{user?.bio}</Text>
       <Text
         marginBottom={7}
         color={useColorModeValue('gray.light', 'gray.dark')}
       >
-        {user.followers.length} followers
+        {user?.followers?.length} followers
       </Text>
-
-      {user.username === currentUser.username ? (
-        <EditProfile />
-      ) : (
-        <Follow user={user} />
-      )}
+      {username === currentUser?.username && <EditProfile user={user} />}
+      {username !== currentUser?.username && <Follow />}
 
       <Tabs marginTop={4} position="relative">
         <TabList borderColor={grayColor} borderBottom={'1px solid'}>

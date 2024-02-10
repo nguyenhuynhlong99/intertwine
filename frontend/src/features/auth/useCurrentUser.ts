@@ -15,14 +15,13 @@ export function useCurrentUser() {
     queryFn: getCurrentUser,
     retry: false, //by default React Query will try to fetch the data 3 times in case it fails in the beginning.
     initialData: userFromLS,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
+    staleTime: 1000,
+    // refetchOnMount: false,
+    // refetchOnWindowFocus: false,
   });
   if (error) {
     removeUserFromLS();
   }
-
-  console.log(data);
 
   // useEffect(() => {
   //   if (!userFromLS) {
@@ -31,6 +30,7 @@ export function useCurrentUser() {
   //     saveUser(user);
   //   }
   // }, [user]);
+  console.log(data?.user);
 
   const user = userFromLS ? data : data?.user;
   const isAuthenticated = user ? true : false;

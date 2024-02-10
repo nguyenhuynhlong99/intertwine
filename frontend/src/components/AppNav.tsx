@@ -11,14 +11,13 @@ import {
   useLocation,
   useNavigate,
 } from 'react-router-dom';
-import { useCurrentUser } from '../features/auth/useCurrentUser';
+import { getUser } from '../utils/userLocalStorage';
 
 export default function AppNav() {
-  const {
-    user: { username },
-  } = useCurrentUser();
+  const currentUsername = getUser()?.username;
   const location = useLocation();
   const navigate = useNavigate();
+  console.log(currentUsername);
 
   const secondaryColor = useColorModeValue('secondary.light', 'secondary.dark');
   const isPostPage = location.pathname.includes('post');
@@ -93,7 +92,7 @@ export default function AppNav() {
         </Button>
         <ChakraLink
           as={ReactRouterNavLink}
-          to={`/${username}`}
+          to={`/${currentUsername}`}
           h={'full'}
           display={'flex'}
           alignItems={'center'}
