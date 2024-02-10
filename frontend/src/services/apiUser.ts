@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-interface UpdateProfileBody {
+export interface UpdateProfileBody {
   name?: string;
   username?: string;
   password?: string;
@@ -10,46 +10,16 @@ interface UpdateProfileBody {
 }
 
 export const getProfile = async (username: string) => {
-  try {
-    const res = await axios.get(`/api/users/${username}`);
-    return res.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.log(error.status);
-      console.error(error.response);
-      return error.response?.data;
-    } else {
-      console.error(error);
-    }
-  }
+  const res = await axios.get(`/api/users/${username}`);
+  return res.data;
 };
 
 export const updateProfile = async (id: string, user: UpdateProfileBody) => {
-  try {
-    const res = await axios.patch(`/api/users/update/${id}`, user);
-    return res.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.log(error.status);
-      console.error(error.response);
-      return error.response?.data;
-    } else {
-      console.error(error);
-    }
-  }
+  const res = await axios.patch(`/api/users/update/${id}`, user);
+  return res.data;
 };
 
 export const followUnfollow = async (id: string) => {
-  try {
-    const res = await axios.patch(`/api/users/follow/${id}`);
-    return res.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.log(error.status);
-      console.error(error.response);
-      return error.response?.data;
-    } else {
-      console.error(error);
-    }
-  }
+  const res = await axios.patch(`/api/users/follow/${id}`);
+  return res.data;
 };

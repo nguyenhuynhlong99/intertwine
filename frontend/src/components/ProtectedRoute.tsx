@@ -1,20 +1,20 @@
 import { useNavigate } from 'react-router-dom';
-import { useCurrentUser } from '../features/auth/useCurrentUser';
 import { useEffect } from 'react';
+import { getUser } from '../utils/userLocalStorage';
 
 interface Props {
   children: React.ReactNode;
 }
 
 export default function ProtectedRoute({ children }: Props) {
+  const currentUser = getUser();
   const navigate = useNavigate();
-  const { isPending, isAuthenticated } = useCurrentUser();
 
   useEffect(() => {
-    if (!isAuthenticated && !isPending) navigate('/auth');
-  }, [isPending, navigate, isAuthenticated]);
+    if (!currentUser) navigate('/auth');
+  }, [navigate, currentUser]);
 
-  if (isAuthenticated) {
+  if (currentUser) {
     return children;
   }
 }
