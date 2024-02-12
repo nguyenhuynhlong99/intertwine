@@ -10,7 +10,7 @@ export default function Follow() {
   const currentUser = getUser();
   const userData = useUser(String(username));
   const user = userData?.user;
-  const { followUnfollowUser } = useFollow(String(username));
+  const { followUnfollowUser, isUpdating } = useFollow(String(username));
 
   const following = user?.followers?.includes(String(currentUser?._id));
 
@@ -35,6 +35,8 @@ export default function Follow() {
       borderRadius={'10px'}
       _hover={{ bg: 'transparent' }}
       onClick={handleFollowUnfollow}
+      isLoading={isUpdating}
+      isDisabled={isUpdating}
     >
       {following ? 'Unfollow' : 'Follow'}
     </Button>

@@ -33,7 +33,7 @@ export default function SignUp() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const setAuthScreen = useSetRecoilState(authScreenAtom);
 
-  const { signup } = useSignup();
+  const { signup, isPending } = useSignup();
 
   const {
     register,
@@ -92,6 +92,7 @@ export default function SignUp() {
                     {...register('name', {
                       required: 'This field is required',
                     })}
+                    isDisabled={isPending}
                   />
 
                   <InputErrorMessage message={errors.name?.message} />
@@ -113,6 +114,7 @@ export default function SignUp() {
                         message: 'Required at least 4 characters',
                       },
                     })}
+                    isDisabled={isPending}
                   />
                   <InputErrorMessage message={errors.username?.message} />
                 </FormControl>
@@ -133,6 +135,7 @@ export default function SignUp() {
                     message: 'Please provide a valid email address',
                   },
                 })}
+                isDisabled={isPending}
               />
               <InputErrorMessage message={errors.email?.message} />
             </FormControl>
@@ -152,6 +155,7 @@ export default function SignUp() {
                       message: 'Required at least 8 characters',
                     },
                   })}
+                  isDisabled={isPending}
                 />
                 <InputRightElement h={'full'}>
                   <Button
@@ -173,13 +177,14 @@ export default function SignUp() {
             <Stack spacing={10} pt={2}>
               <Button
                 type="submit"
-                loadingText="Submitting"
+                // loadingText="Submitting"
                 size="lg"
                 bg={useColorModeValue('secondary.light', 'secondary.dark')}
                 color={useColorModeValue('primary.light', 'primary.dark')}
                 _hover={{
                   bg: accentColor,
                 }}
+                isLoading={isPending}
               >
                 Sign up
               </Button>
