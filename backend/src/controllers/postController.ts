@@ -3,6 +3,7 @@ import { IGetUserAuthInfoRequest } from '../middlewares/protectRoute.js';
 import Post from '../models/Post.js';
 import getErrorMessage from '../utils/getErrorMessage.js';
 import User from '../models/User.js';
+import { v2 as cloudinary } from 'cloudinary';
 
 const getPost = async (req: Request, res: Response) => {
   try {
@@ -22,7 +23,8 @@ const getPost = async (req: Request, res: Response) => {
 
 const createPost = async (req: IGetUserAuthInfoRequest, res: Response) => {
   try {
-    const { postedBy, text, img } = req.body;
+    const { postedBy, text } = req.body;
+    let { img } = req.body;
 
     if (!postedBy || !text)
       return res.status(400).json({ error: 'Please fill all the fields' });
@@ -42,6 +44,11 @@ const createPost = async (req: IGetUserAuthInfoRequest, res: Response) => {
         .json({ error: `Text muse be less than ${maxLength} characters` });
     }
 
+    if (img) {
+      const uploadedResponse = await cloudinary.uploader.upload(img);
+      img = uploadedResponse.secure_url;
+    }
+
     const post = await Post.create({
       postedBy,
       text,
@@ -50,8 +57,6 @@ const createPost = async (req: IGetUserAuthInfoRequest, res: Response) => {
 
     if (post) {
       res.status(201).json({
-        status: 'success',
-
         post,
       });
     } else {
@@ -120,12 +125,11 @@ const replyToPost = async (req: IGetUserAuthInfoRequest, res: Response) => {
     const userProfilePic = req.user.profilePic;
     const username = req.user.username;
 
-    if (!text)
-      return res.status(400).json({ message: 'Text field is required' });
+    if (!text) return res.status(400).json({ error: 'Text field is required' });
 
     const post = await Post.findById(postId);
 
-    if (!post) return res.status(404).json({ message: 'Post not found' });
+    if (!post) return res.status(404).json({ error: 'Post not found' });
 
     const reply = { userId, text, userProfilePic, username };
 

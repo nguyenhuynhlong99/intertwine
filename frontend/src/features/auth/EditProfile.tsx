@@ -40,7 +40,7 @@ export default function EditProfile({ user }: Props) {
   // const user = userData?.user;
   // const isPending = userData?.isPending;
   // const { _id: userId, ...userValues } = user ? user : {};
-  const { editProfile } = useEditProfile(user?.username);
+  const { editProfile, isUpdating } = useEditProfile(user?.username);
   // console.log(userData?.user);
   console.log(user);
 
@@ -133,7 +133,7 @@ export default function EditProfile({ user }: Props) {
             >
               <Avatar
                 size={'xl'}
-                src={String(user?.profilePic || imgPreview)}
+                src={String(imgPreview || user?.profilePic)}
               />
               <Button onClick={() => fileRef.current?.click()}>
                 Change avatar
@@ -166,7 +166,12 @@ export default function EditProfile({ user }: Props) {
               <Input type="password" {...register('password')} />
             </FormControl>
 
-            <Button type="submit" w={'full'}>
+            <Button
+              type="submit"
+              w={'full'}
+              isLoading={isUpdating}
+              isDisabled={isUpdating}
+            >
               Done
             </Button>
           </ModalBody>

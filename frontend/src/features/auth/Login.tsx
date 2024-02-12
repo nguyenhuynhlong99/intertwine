@@ -33,7 +33,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const setAuthScreen = useSetRecoilState(authScreenAtom);
   // const setUser = useSetRecoilState(userAtom);
-  const { login } = useLogin();
+  const { login, isPending } = useLogin();
 
   const {
     register,
@@ -46,23 +46,11 @@ export default function Login() {
   const secondaryColor = useColorModeValue('secondary.light', 'secondary.dark');
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    // try {
-    // const userData = await login(data);
-    // if (userData?.error) {
-    //   showToast('Failed to log in', userData?.error, 'error');
-    //   return;
-    // }
-    // localStorage.setItem('intertwine-user', JSON.stringify(userData));
-    // setUser(userData);
     login(data, {
       onSuccess: () => {
         reset();
       },
     });
-    // } catch (error) {
-    //   showToast('Error', 'Failed to log in', 'error');
-    //   console.error(error);
-    // }
   };
 
   return (
@@ -106,6 +94,7 @@ export default function Login() {
                 {...register('username', {
                   required: 'This field is required',
                 })}
+                isDisabled={isPending}
               />
               <InputErrorMessage message={errors?.username?.message} />
             </FormControl>
@@ -121,6 +110,7 @@ export default function Login() {
                   {...register('password', {
                     required: 'This field is required',
                   })}
+                  isDisabled={isPending}
                 />
                 <InputRightElement h={'full'}>
                   <Button
@@ -142,7 +132,6 @@ export default function Login() {
             <Stack spacing={10} pt={2}>
               <Button
                 type="submit"
-                loadingText="Submitting"
                 size="lg"
                 bg={useColorModeValue('secondary.light', 'secondary.dark')}
                 color={useColorModeValue('primary.light', 'primary.dark')}
@@ -150,6 +139,7 @@ export default function Login() {
                   bg: accentColor,
                   color: secondaryColor,
                 }}
+                isLoading={isPending}
               >
                 Login
               </Button>

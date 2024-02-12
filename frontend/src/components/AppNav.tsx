@@ -3,15 +3,16 @@ import {
   Grid,
   Link as ChakraLink,
   useColorModeValue,
-  Button,
 } from '@chakra-ui/react';
-import { ArrowLeft } from '@phosphor-icons/react';
+import { ArrowLeft, MagnifyingGlass, User } from '@phosphor-icons/react';
 import {
   NavLink as ReactRouterNavLink,
   useLocation,
   useNavigate,
 } from 'react-router-dom';
 import { getUser } from '../utils/userLocalStorage';
+import CreatePost from '../features/posts/CreatePost';
+import { House } from '@phosphor-icons/react';
 
 export default function AppNav() {
   const currentUsername = getUser()?.username;
@@ -19,6 +20,7 @@ export default function AppNav() {
   const navigate = useNavigate();
   console.log(currentUsername);
 
+  const accentColor = useColorModeValue('accent.light', 'accent.dark');
   const secondaryColor = useColorModeValue('secondary.light', 'secondary.dark');
   const isPostPage = location.pathname.includes('post');
   const templateColumns = isPostPage ? 'repeat(5, 20%)' : 'repeat(4, 25%)';
@@ -59,8 +61,9 @@ export default function AppNav() {
           _hover={{
             bg: secondaryColor,
           }}
+          color={accentColor}
         >
-          🏠
+          <House />
         </ChakraLink>
         <ChakraLink
           as={ReactRouterNavLink}
@@ -74,22 +77,11 @@ export default function AppNav() {
           _hover={{
             bg: secondaryColor,
           }}
+          color={accentColor}
         >
-          🔍
+          <MagnifyingGlass />
         </ChakraLink>
-        <Button
-          display={'block'}
-          bg={'transparent'}
-          h={'full'}
-          textAlign={'center'}
-          borderRadius={'10px'}
-          fontSize={'26px'}
-          _hover={{
-            bg: secondaryColor,
-          }}
-        >
-          📝
-        </Button>
+        <CreatePost />
         <ChakraLink
           as={ReactRouterNavLink}
           to={`/${currentUsername}`}
@@ -102,8 +94,9 @@ export default function AppNav() {
           _hover={{
             bg: secondaryColor,
           }}
+          color={accentColor}
         >
-          👤
+          <User />
         </ChakraLink>
       </Grid>
     </Box>

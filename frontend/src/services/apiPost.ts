@@ -1,10 +1,17 @@
 import axios from 'axios';
 
+export interface PostBody {
+  postedBy: string;
+  text: string;
+  img?: string | ArrayBuffer | null;
+}
+
 export const getPost = async (id: string) => {
-  try {
-    const res = await axios.get(`/api/posts/${id}`);
-    return res.data;
-  } catch (error) {
-    console.error(error);
-  }
+  const res = await axios.get(`/api/posts/${id}`);
+  return res.data;
+};
+
+export const createPost = async (post: PostBody) => {
+  const res = await axios.post('/api/posts', post);
+  return res.data;
 };

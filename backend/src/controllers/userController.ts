@@ -32,12 +32,6 @@ const signupUser = async (req: Request, res: Response) => {
     user.password = null;
 
     res.status(201).json({
-      // _id: user._id,
-      // name: user.name,
-      // email: user.email,
-      // username: user.username,
-      // bio: user.bio,
-      // profilePic: user.profilePic,
       user,
     });
   } catch (error) {
@@ -56,12 +50,6 @@ const loginUser = async (req: Request, res: Response) => {
     user.password = null;
 
     res.status(200).json({
-      // _id: user._id,
-      // name: user.name,
-      // email: user.email,
-      // username: user.username,
-      // bio: user.bio,
-      // profilePic: user.profilePic,
       user,
     });
   } catch (error) {
@@ -164,12 +152,6 @@ const updateUser = async (req: IGetUserAuthInfoRequest, res: Response) => {
     user = await User.findById(user._id);
 
     res.status(200).json({
-      // _id: user?._id,
-      // name: user?.name,
-      // email: user?.email,
-      // username: user?.username,
-      // bio: user?.bio,
-      // profilePic: user?.profilePic,
       user,
     });
   } catch (error) {
