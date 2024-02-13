@@ -1,18 +1,17 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useShowToast from '../../hooks/useShowToast';
 import axios, { AxiosError } from 'axios';
-import { createPost as createPostApi } from '../../services/apiPost';
+import { likeUnlikePost } from '../../services/apiPost';
 
-function useCreatePost() {
+function useLikePost(id: string) {
   const queryClient = useQueryClient();
   const { showToast } = useShowToast();
 
-  const { mutate: createPost, isPending: isCreating } = useMutation({
-    mutationFn: createPostApi,
-    onSuccess: (data) => {
-      console.log(data);
+  const { mutate: likePost, isPending } = useMutation({
+    mutationFn: likeUnlikePost,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['post', id] });
       queryClient.invalidateQueries({ queryKey: ['posts'] });
-      showToast('Success', 'Created post successfully', 'success');
     },
     onError: (err: Error | AxiosError) => {
       console.log(err);
@@ -24,7 +23,7 @@ function useCreatePost() {
     },
   });
 
-  return { createPost, isCreating };
+  return { likePost, isPending };
 }
 
-export default useCreatePost;
+export default useLikePost;

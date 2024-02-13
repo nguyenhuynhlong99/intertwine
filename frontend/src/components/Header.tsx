@@ -1,6 +1,6 @@
-import { Flex, useColorMode, Link as ChakraLink, Box } from '@chakra-ui/react';
+import { Flex, useColorMode, Box } from '@chakra-ui/react';
 import { Moon, Sun } from '@phosphor-icons/react';
-import { NavLink as ReactRouterNavLink } from 'react-router-dom';
+// import { NavLink as ReactRouterNavLink } from 'react-router-dom';
 import AppNav from './AppNav';
 import Logout from '../features/auth/Logout';
 
@@ -14,16 +14,16 @@ export default function Header() {
       justifyContent="space-between"
       h="74px"
     >
-      <Box margin={{ base: 'auto', md: 'unset' }}>
-        <ChakraLink
-          as={ReactRouterNavLink}
-          to="/"
-          _hover={{
-            border: 'none',
-          }}
-        >
-          🧵
-        </ChakraLink>
+      <Box
+        as="span"
+        margin={{ base: 'auto', md: 'unset' }}
+        transition={'transform .2s ease'}
+        _hover={{
+          transform: 'scale(1.3)',
+        }}
+        cursor={'pointer'}
+      >
+        🧵
       </Box>
 
       <AppNav />

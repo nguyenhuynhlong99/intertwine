@@ -11,25 +11,44 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import PostActions from './PostActions';
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
+import { BROKEN_LINK_IMG, getUser } from '../../utils/userLocalStorage';
+import { useNavigate } from 'react-router-dom';
+import { formatDistanceToNow } from 'date-fns';
+
+export interface Reply {
+  userProfilePic: string;
+}
 
 interface Props {
-  likes: number;
-  replies?: number;
+  postId: string;
+  likes: [string | null];
+  replies: Reply[];
   postImg?: string;
   content?: string;
   variant?: string;
+  userImg?: string;
+  username?: string;
+  createdAt?: string;
 }
 
 export default function PostCard({
+  postId,
   likes,
   replies,
   postImg,
   content,
   variant = 'post',
+  userImg,
+  username,
+  createdAt,
 }: Props) {
-  const [liked, setLiked] = useState<boolean>(false);
+  const currentUserId = getUser()._id;
+  const [liked, setLiked] = useState<boolean>(likes.includes(currentUserId));
+  const navigate = useNavigate();
+
   const { colorMode } = useColorMode();
+  const bgColor = useColorModeValue('bg.light', 'bg.dark');
   const templateAreas =
     variant === 'postDetail'
       ? `"avatar header"
@@ -40,6 +59,11 @@ export default function PostCard({
          "line body"
          "avatarFooter footer"`;
 
+  function navigateToUserPage(e: FormEvent) {
+    e.preventDefault();
+    navigate(`/${username}`);
+  }
+
   return (
     <>
       <Grid
@@ -48,11 +72,14 @@ export default function PostCard({
         gridTemplateRows={'auto auto 1fr auto'}
         gap={2}
       >
-        <GridItem area={'avatar'}>
-          <Avatar
-            size={'sm'}
-            src="https://www.the-sun.com/wp-content/uploads/sites/6/2023/10/www-instagram-com-monkeycatluna-hl-851711797.jpg"
-          />
+        <GridItem
+          area={'avatar'}
+          onClick={navigateToUserPage}
+          display={'flex'}
+          alignItems={'center'}
+          justifyContent={'center'}
+        >
+          <Avatar size={'sm'} src={userImg || BROKEN_LINK_IMG} />
         </GridItem>
 
         <GridItem
@@ -61,9 +88,17 @@ export default function PostCard({
           alignItems={'center'}
           justifyContent={'space-between'}
         >
-          <Text fontWeight={600}>_itsbeenalongday</Text>
+          <Text fontWeight={600} onClick={navigateToUserPage}>
+            {username}
+          </Text>
 
-          <Text color={useColorModeValue('gray.light', 'gray.dark')}>1d</Text>
+          <Text
+            fontWeight={400}
+            fontSize={'sm'}
+            color={useColorModeValue('gray.light', 'gray.dark')}
+          >
+            {formatDistanceToNow(new Date(String(createdAt)))}
+          </Text>
         </GridItem>
 
         <GridItem
@@ -85,7 +120,7 @@ export default function PostCard({
             </Box>
           )}
 
-          <PostActions liked={liked} setLiked={setLiked} />
+          <PostActions liked={liked} setLiked={setLiked} postId={postId} />
         </GridItem>
 
         {variant !== 'postDetail' && (
@@ -99,7 +134,7 @@ export default function PostCard({
               h={'full'}
               w="1px"
               bg={colorMode === 'light' ? 'secondary.light' : 'secondary.dark'}
-              my={2}
+              visibility={replies?.length === 0 ? 'hidden' : 'visible'}
             ></Box>
           </GridItem>
         )}
@@ -114,37 +149,59 @@ export default function PostCard({
             w={'39px'}
             h={'35px'}
           >
-            <Avatar
-              position={'absolute'}
-              top={0}
-              right={0}
-              size={'2xs'}
-              src="https://www.the-sun.com/wp-content/uploads/sites/6/2023/10/www-instagram-com-monkeycatluna-hl-851711797.jpg"
-            />
-            <Avatar
-              position={'absolute'}
-              top={'7px'}
-              left={'0'}
-              size={'2xs'}
-              src="https://www.the-sun.com/wp-content/uploads/sites/6/2023/10/www-instagram-com-monkeycatluna-hl-851711797.jpg"
-            />
-            <Avatar
-              position={'absolute'}
-              bottom={0}
-              left={'16px'}
-              size={'2xs'}
-              src="https://www.the-sun.com/wp-content/uploads/sites/6/2023/10/www-instagram-com-monkeycatluna-hl-851711797.jpg"
-            />
+            {replies?.length === 1 && (
+              <Flex alignItems={'center'} justifyContent={'center'}>
+                <Avatar size={'2xs'} src={replies[0]?.userProfilePic} />
+              </Flex>
+            )}
+
+            {replies?.length === 2 && (
+              <Flex alignItems={'center'}>
+                <Avatar size={'2xs'} src={replies[0]?.userProfilePic} />
+                <Avatar
+                  border={`1px solid ${bgColor}`}
+                  ml={'-2px'}
+                  size={'2xs'}
+                  src={replies[1]?.userProfilePic}
+                />
+              </Flex>
+            )}
+
+            {replies?.length > 2 && (
+              <>
+                <Avatar
+                  position={'absolute'}
+                  top={0}
+                  right={0}
+                  size={'2xs'}
+                  src={replies[0]?.userProfilePic}
+                />
+                <Avatar
+                  position={'absolute'}
+                  top={'7px'}
+                  left={'0'}
+                  size={'2xs'}
+                  src={replies[1]?.userProfilePic}
+                />
+                <Avatar
+                  position={'absolute'}
+                  bottom={0}
+                  left={'16px'}
+                  size={'2xs'}
+                  src={replies[2]?.userProfilePic}
+                />{' '}
+              </>
+            )}
           </GridItem>
         )}
 
-        <GridItem area={'footer'}>
+        <GridItem area={'footer'} display={'flex'} alignItems={'center'}>
           <Flex alignItems={'center'} gap={2}>
             <Text
               color={useColorModeValue('gray.light', 'gray.dark')}
               fontSize={'sm'}
             >
-              {replies} replies
+              {replies?.length} replies
             </Text>
             <Box
               as="span"
@@ -157,7 +214,7 @@ export default function PostCard({
               color={useColorModeValue('gray.light', 'gray.dark')}
               fontSize={'sm'}
             >
-              {likes + (liked ? 1 : 0)} likes
+              {likes.length} likes
             </Text>
           </Flex>
         </GridItem>

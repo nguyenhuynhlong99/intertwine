@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import validator from 'validator';
 
-interface IUser {
+export interface IUser {
   name: string;
   username: string;
   email: string;

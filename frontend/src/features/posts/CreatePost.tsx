@@ -25,7 +25,7 @@ import { Images, NotePencil } from '@phosphor-icons/react';
 import useImgPreview from '../../hooks/useImgPreview';
 import { ChangeEvent, useRef, useState } from 'react';
 import useCreatePost from './useCreatePost';
-import { getUser } from '../../utils/userLocalStorage';
+import { BROKEN_LINK_IMG, getUser } from '../../utils/userLocalStorage';
 
 const MAX_CHAR = 500;
 
@@ -108,7 +108,7 @@ export default function CreatePost() {
           <ModalBody as={'form'} onSubmit={handleCreatePost}>
             <Grid gridTemplateColumns={'auto 1fr'} gap={2}>
               <GridItem>
-                <Avatar size={'sm'} src="https://bit.ly/broken-link" />
+                <Avatar size={'sm'} src={BROKEN_LINK_IMG} />
               </GridItem>
 
               <GridItem>

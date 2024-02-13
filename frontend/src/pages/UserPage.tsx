@@ -1,6 +1,6 @@
 // import UserInfo from '../components/UserInfo';
 import { Container, Flex, Spinner, useColorModeValue } from '@chakra-ui/react';
-import PostList from '../features/posts/PostList';
+// import PostList from '../features/posts/PostList';
 import { useParams } from 'react-router-dom';
 import { useUser } from '../features/auth/useUser';
 import UserInfo from '../components/UserInfo';
@@ -26,7 +26,7 @@ export default function UserPage() {
     <Container maxW="572px">
       <UserInfo />
 
-      <PostList />
+      {/* <PostList /> */}
     </Container>
   );
 }

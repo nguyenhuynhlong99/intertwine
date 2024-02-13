@@ -1,4 +1,5 @@
 const USER_LOCAL_STORAGE_KEY = 'INTERTWINE_USER';
+export const BROKEN_LINK_IMG = 'https://bit.ly/broken-link';
 
 export function saveUser(user: unknown): void {
   localStorage.setItem(USER_LOCAL_STORAGE_KEY, JSON.stringify(user));
