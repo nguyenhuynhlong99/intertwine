@@ -15,3 +15,13 @@ export const createPost = async (post: PostBody) => {
   const res = await axios.post('/api/posts', post);
   return res.data;
 };
+
+export const getFeedPosts = async () => {
+  const res = await axios.get(`/api/posts/feed`);
+  return res.data;
+};
+
+export const likeUnlikePost = async (id: string) => {
+  const res = await axios.patch(`/api/posts/like/${id}`);
+  return res.data;
+};

@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Query } from 'mongoose';
 
 interface Reply {
   userId: mongoose.Schema.Types.ObjectId;
@@ -55,6 +55,11 @@ const postSchema = new mongoose.Schema<Post>(
     timestamps: true,
   }
 );
+
+postSchema.pre<Query<unknown, unknown>>(/^find/, function (next) {
+  this.populate('postedBy');
+  next();
+});
 
 const Post = mongoose.model<Post>('Post', postSchema);
 

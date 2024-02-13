@@ -13,7 +13,7 @@ import EditProfile from '../features/auth/EditProfile';
 import Follow from '../features/user/Follow';
 import { useUser } from '../features/auth/useUser';
 import { useParams } from 'react-router-dom';
-import { getUser } from '../utils/userLocalStorage';
+import { BROKEN_LINK_IMG, getUser } from '../utils/userLocalStorage';
 
 export default function UserInfo() {
   const { username } = useParams();
@@ -47,7 +47,7 @@ export default function UserInfo() {
           {user?.profilePic ? (
             <Avatar
               name={user?.name}
-              src={user?.profilePic || 'https://bit.ly/broken-link'}
+              src={user?.profilePic}
               size={{
                 base: 'md',
                 md: 'lg',
@@ -56,7 +56,7 @@ export default function UserInfo() {
             />
           ) : (
             <Avatar
-              src={'https://bit.ly/broken-link'}
+              src={BROKEN_LINK_IMG}
               size={{
                 base: 'md',
                 md: 'lg',

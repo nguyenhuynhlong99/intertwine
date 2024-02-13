@@ -1,21 +1,44 @@
 import { Box } from '@chakra-ui/react';
-import PostCard from './PostCard';
+import PostCard, { Reply } from './PostCard';
 import { Link } from 'react-router-dom';
 
-export default function PostList() {
+interface Post {
+  _id: string;
+  likes: [string | null];
+  replies: Reply[];
+  img: string;
+  text: string;
+  createdAt: string;
+  postedBy: {
+    profilePic: string;
+    username: string;
+  };
+}
+
+interface Props {
+  posts: Post[];
+}
+
+export default function PostList({ posts }: Props) {
   return (
-    <Box as="ul" display={'flex'} flexDirection={'column'} gap={6}>
-      <Box as="li">
-        <Link to="/sad/post/1">
-          <PostCard
-            likes={8}
-            replies={4}
-            postImg="https://blog.cvcavets.com/hs-fs/hubfs/9.jpg?width=334&name=9.jpg"
-            content="Summer is for falling in love - Sarah Kang"
-          />
-        </Link>
-      </Box>
-      <Box as="li">
+    <Box as="ul" display={'flex'} flexDirection={'column'} gap={6} mt={4}>
+      {posts?.map((post) => (
+        <Box key={`post-${post._id}`} as="li">
+          <Link to={`/${post?.postedBy?.username}/post/${post?._id}`}>
+            <PostCard
+              postId={post?._id}
+              likes={post?.likes}
+              replies={post?.replies}
+              postImg={post?.img}
+              content={post?.text}
+              userImg={post?.postedBy?.profilePic}
+              username={post?.postedBy?.username}
+              createdAt={post?.createdAt}
+            />
+          </Link>
+        </Box>
+      ))}
+      {/* <Box as="li">
         <Link to="/sad/post/1">
           <PostCard
             likes={12}
@@ -23,7 +46,7 @@ export default function PostList() {
             content="Summer is for falling in love - Sarah Kang"
           />
         </Link>
-      </Box>
+      </Box> */}
     </Box>
   );
 }
