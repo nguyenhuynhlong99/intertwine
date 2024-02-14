@@ -1,4 +1,4 @@
-import { Flex, useColorMode, Box } from '@chakra-ui/react';
+import { Flex, useColorMode, Box, Text } from '@chakra-ui/react';
 import { Moon, Sun } from '@phosphor-icons/react';
 // import { NavLink as ReactRouterNavLink } from 'react-router-dom';
 import AppNav from './AppNav';
@@ -14,16 +14,18 @@ export default function Header() {
       justifyContent="space-between"
       h="74px"
     >
-      <Box
-        as="span"
-        margin={{ base: 'auto', md: 'unset' }}
-        transition={'transform .2s ease'}
-        _hover={{
-          transform: 'scale(1.3)',
-        }}
-        cursor={'pointer'}
-      >
-        🧵
+      <Box margin={{ base: 'auto', md: 'unset' }} fontSize={'26px'}>
+        <Text
+          as="span"
+          display={'inline-block'}
+          transition={'transform .2s'}
+          _hover={{
+            transform: 'scale(1.1)',
+          }}
+          cursor={'pointer'}
+        >
+          🧵
+        </Text>
       </Box>
 
       <AppNav />
