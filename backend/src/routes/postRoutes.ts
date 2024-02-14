@@ -6,6 +6,7 @@ import {
   getFeedPosts,
   likeUnlikePost,
   replyToPost,
+  getUserPosts,
 } from '../controllers/postController.js';
 import protectRoute from '../middlewares/protectRoute.js';
 
@@ -17,6 +18,7 @@ router.patch('/reply/:id', protectRoute, replyToPost);
 router.get('/feed', protectRoute, getFeedPosts);
 router.post('/', protectRoute, createPost);
 router.get('/:id', getPost);
+router.get('/user/:username', protectRoute, getUserPosts);
 router.delete('/:id', protectRoute, deletePost);
 
 export default router;

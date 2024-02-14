@@ -11,12 +11,13 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import PostActions from './PostActions';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useMemo, useState } from 'react';
 import { BROKEN_LINK_IMG, getUser } from '../../utils/userLocalStorage';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 
 export interface Reply {
+  userId: string;
   userProfilePic: string;
 }
 
@@ -46,6 +47,19 @@ export default function PostCard({
   const currentUserId = getUser()._id;
   const [liked, setLiked] = useState<boolean>(likes.includes(currentUserId));
   const navigate = useNavigate();
+
+  const filteredDuplicateUsers = useMemo(() => {
+    const seen = new Set();
+
+    const filteredDups = replies?.filter((reply) => {
+      if (seen.size === 3) return;
+      const duplicate = seen.has(reply.userId);
+      seen.add(reply.userId);
+      return !duplicate;
+    });
+
+    return filteredDups;
+  }, [replies]);
 
   const { colorMode } = useColorMode();
   const bgColor = useColorModeValue('bg.light', 'bg.dark');
@@ -120,7 +134,12 @@ export default function PostCard({
             </Box>
           )}
 
-          <PostActions liked={liked} setLiked={setLiked} postId={postId} />
+          <PostActions
+            liked={liked}
+            setLiked={setLiked}
+            postId={postId}
+            postedByUsername={String(username)}
+          />
         </GridItem>
 
         {variant !== 'postDetail' && (
@@ -149,46 +168,52 @@ export default function PostCard({
             w={'39px'}
             h={'35px'}
           >
-            {replies?.length === 1 && (
+            {filteredDuplicateUsers?.length === 1 && (
               <Flex alignItems={'center'} justifyContent={'center'}>
-                <Avatar size={'2xs'} src={replies[0]?.userProfilePic} />
-              </Flex>
-            )}
-
-            {replies?.length === 2 && (
-              <Flex alignItems={'center'}>
-                <Avatar size={'2xs'} src={replies[0]?.userProfilePic} />
                 <Avatar
-                  border={`1px solid ${bgColor}`}
-                  ml={'-2px'}
                   size={'2xs'}
-                  src={replies[1]?.userProfilePic}
+                  src={filteredDuplicateUsers[0]?.userProfilePic}
                 />
               </Flex>
             )}
 
-            {replies?.length > 2 && (
+            {filteredDuplicateUsers?.length === 2 && (
+              <Flex alignItems={'center'}>
+                <Avatar
+                  size={'2xs'}
+                  src={filteredDuplicateUsers[0]?.userProfilePic}
+                />
+                <Avatar
+                  border={`1px solid ${bgColor}`}
+                  ml={'-2px'}
+                  size={'2xs'}
+                  src={filteredDuplicateUsers[1]?.userProfilePic}
+                />
+              </Flex>
+            )}
+
+            {filteredDuplicateUsers?.length > 2 && (
               <>
                 <Avatar
                   position={'absolute'}
                   top={0}
                   right={0}
                   size={'2xs'}
-                  src={replies[0]?.userProfilePic}
+                  src={filteredDuplicateUsers[0]?.userProfilePic}
                 />
                 <Avatar
                   position={'absolute'}
                   top={'7px'}
                   left={'0'}
                   size={'2xs'}
-                  src={replies[1]?.userProfilePic}
+                  src={filteredDuplicateUsers[1]?.userProfilePic}
                 />
                 <Avatar
                   position={'absolute'}
                   bottom={0}
                   left={'16px'}
                   size={'2xs'}
-                  src={replies[2]?.userProfilePic}
+                  src={filteredDuplicateUsers[2]?.userProfilePic}
                 />{' '}
               </>
             )}

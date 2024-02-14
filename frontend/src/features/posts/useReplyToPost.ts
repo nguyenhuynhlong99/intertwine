@@ -1,15 +1,25 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useShowToast from '../../hooks/useShowToast';
 import axios, { AxiosError } from 'axios';
-import { likeUnlikePost } from '../../services/apiPost';
+import {
+  ReplyBody,
+  replyToPost as replyToPostApi,
+} from '../../services/apiPost';
 
-function useLikePost(id: string) {
+interface MutationFnParameter {
+  id: string;
+  reply: ReplyBody;
+}
+
+function useReplyToPost(id: string) {
   const queryClient = useQueryClient();
   const { showToast } = useShowToast();
 
-  const { mutate: likePost, isPending } = useMutation({
-    mutationFn: likeUnlikePost,
+  const { mutate: replyToPost, isPending } = useMutation({
+    mutationFn: ({ id, reply }: MutationFnParameter) =>
+      replyToPostApi(id, reply),
     onSuccess: () => {
+      showToast('Success', 'Replied to post successfully', 'success');
       queryClient.invalidateQueries({ queryKey: ['post', id] });
       queryClient.invalidateQueries({ queryKey: ['posts'] });
     },
@@ -19,11 +29,11 @@ function useLikePost(id: string) {
         showToast('Error', err?.response?.data?.error, 'error');
         return;
       }
-      showToast('Error', 'Failed to like/dislike post', 'error');
+      showToast('Error', 'Failed to reply to post', 'error');
     },
   });
 
-  return { likePost, isPending };
+  return { replyToPost, isPending };
 }
 
-export default useLikePost;
+export default useReplyToPost;

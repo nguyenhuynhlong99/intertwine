@@ -106,13 +106,16 @@ export default function CreatePost() {
           <ModalHeader textAlign={'center'}>New Post</ModalHeader>
 
           <ModalBody as={'form'} onSubmit={handleCreatePost}>
-            <Grid gridTemplateColumns={'auto 1fr'} gap={2}>
+            <Grid gridTemplateColumns={'auto 1fr'} gap={3}>
               <GridItem>
-                <Avatar size={'sm'} src={BROKEN_LINK_IMG} />
+                <Avatar
+                  size={'sm'}
+                  src={currentUser?.profilePic || BROKEN_LINK_IMG}
+                />
               </GridItem>
 
               <GridItem>
-                <Text mb={1}>_itsbeenalongday</Text>
+                <Text mb={1}>{currentUser?.username}</Text>
 
                 <FormControl id="content">
                   <Input

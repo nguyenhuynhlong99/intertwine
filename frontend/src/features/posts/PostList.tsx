@@ -38,15 +38,6 @@ export default function PostList({ posts }: Props) {
           </Link>
         </Box>
       ))}
-      {/* <Box as="li">
-        <Link to="/sad/post/1">
-          <PostCard
-            likes={12}
-            replies={8}
-            content="Summer is for falling in love - Sarah Kang"
-          />
-        </Link>
-      </Box> */}
     </Box>
   );
 }
