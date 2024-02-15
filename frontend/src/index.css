@@ -1,11 +1,13 @@
 :root {
   body.chakra-ui-light {
+    --color-primary: #1d3263;
     --color-secondary: #7493dc;
     --color-support: #dbe2f2;
     --color-accent: #2856c3;
   }
 
   body.chakra-ui-dark {
+    --color-primary: #9cb1e2;
     --color-secondary: #23428b;
     --color-support: #0d1527;
     --color-accent: #3c6bd7;
@@ -21,8 +23,6 @@ input:focus-visible {
 .icon-container {
   border-radius: 50%;
   padding: 8px;
-  width: 40px;
-  height: 40px;
   transition: background-color 300ms ease-in-out;
   display: flex;
   align-items: center;
@@ -31,4 +31,22 @@ input:focus-visible {
 
 .icon-container:hover {
   background-color: var(--color-secondary);
+}
+
+.navLink {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-size: 32px;
+  color: var(--color-accent);
+}
+
+.navLink:hover {
+  background-color: var(--color-secondary);
+}
+
+.navLink.active {
+  color: var(--color-primary);
 }

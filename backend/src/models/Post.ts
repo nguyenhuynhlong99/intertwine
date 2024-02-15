@@ -1,4 +1,5 @@
-import mongoose, { Query } from 'mongoose';
+import mongoose, { ObjectId, PopulatedDoc, Query, Document } from 'mongoose';
+import { IUser } from './User.js';
 
 interface Reply {
   userId: mongoose.Schema.Types.ObjectId;
@@ -8,7 +9,8 @@ interface Reply {
 }
 
 interface Post {
-  postedBy: mongoose.Schema.Types.ObjectId;
+  // postedBy: mongoose.Schema.Types.ObjectId;
+  postedBy: PopulatedDoc<Document<ObjectId> & IUser>;
   text: string;
   img?: string;
   likes?: [mongoose.Schema.Types.ObjectId];

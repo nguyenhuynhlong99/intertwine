@@ -1,33 +1,71 @@
-import { Container } from '@chakra-ui/react';
+import { Container, Flex, Spinner, useColorModeValue } from '@chakra-ui/react';
 // import PostCard from '../features/posts/PostCard';
 import Reply from '../features/posts/Reply';
+import { useParams } from 'react-router-dom';
+import usePost from '../features/posts/usePost';
+import PostCard from '../features/posts/PostCard';
+
+interface Reply {
+  _id: string;
+  username: string;
+  userProfilePic: string;
+  text: string;
+}
 
 export default function PostPage() {
+  const { pid: postId } = useParams();
+
+  const postData = usePost(String(postId));
+  const post = postData?.post;
+  const replies: Reply[] = post?.replies;
+
+  const accentColor = useColorModeValue('accent.light', 'accent.dark');
+
+  if (postData?.isPending) {
+    return (
+      <Flex justifyContent={'center'}>
+        <Spinner size={'xl'} color={accentColor} />
+      </Flex>
+    );
+  }
+
+  if (!postData?.isPending && !post) {
+    return null;
+  }
+
+  console.log(post);
+
   return (
     <Container maxW="572px" mt={4}>
-      {/* <PostCard
-        variant="postPage"
-        likes={8}
-        replies={4}
-        content="Summer is for falling in love - Sarah Kang"
-        postImg="https://blog.cvcavets.com/hs-fs/hubfs/9.jpg?width=334&name=9.jpg"
-      /> */}
-
-      <Reply
-        username="itsbeenmeowday"
-        avatar="https://i.chzbgr.com/full/7929533696/hB519D262/no-i-havent-had-too-much"
-        likes={12}
-        img="https://www.rd.com/wp-content/uploads/2023/04/Hilarious-Cat-Memes-3.jpg?fit=700%2C700"
-        content="Hello friend, It's meow!"
+      <PostCard
+        variant="postDetail"
+        postId={post?._id}
+        likes={post?.likes}
+        replies={post?.replies}
+        postImg={post?.img}
+        content={post?.text}
+        userImg={post?.postedBy?.profilePic}
+        username={post?.postedBy?.username}
+        createdAt={post?.createdAt}
+        userId={post?.postedBy?._id}
       />
 
-      <Reply
+      {replies?.map((reply) => (
+        <Reply
+          key={reply._id}
+          username={reply?.username}
+          avatar={reply?.userProfilePic}
+          content={reply?.text}
+        />
+      ))}
+
+      {/* <Reply
         username="garfieldthecat"
         avatar="https://pbs.twimg.com/media/BVGbRq3CcAEgSy6.jpg:large"
         likes={24}
         img="https://pbs.twimg.com/media/EqTlmUCWMAEgJev.jpg"
         content="You know me!"
-      />
+      /> */}
     </Container>
   );
 }

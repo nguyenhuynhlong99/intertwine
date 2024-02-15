@@ -14,7 +14,7 @@ export default function Header() {
       justifyContent="space-between"
       h="74px"
     >
-      <Box margin={{ base: 'auto', md: 'unset' }} fontSize={'26px'}>
+      <Box margin={{ base: 'auto', md: 'unset' }} fontSize={'30px'}>
         <Text
           as="span"
           display={'inline-block'}
@@ -33,9 +33,9 @@ export default function Header() {
       <Flex alignItems={'center'} gap={1}>
         <button onClick={toggleColorMode} className="icon-container">
           {colorMode === 'light' ? (
-            <Moon size={26} color="#2856c3" />
+            <Moon size={32} color="#2856c3" />
           ) : (
-            <Sun size={26} color="#3c6bd7" />
+            <Sun size={32} color="#3c6bd7" />
           )}
         </button>
         <Logout />

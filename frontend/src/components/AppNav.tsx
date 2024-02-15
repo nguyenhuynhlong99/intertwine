@@ -1,9 +1,4 @@
-import {
-  Box,
-  Grid,
-  Link as ChakraLink,
-  useColorModeValue,
-} from '@chakra-ui/react';
+import { Box, Grid } from '@chakra-ui/react';
 import { ArrowLeft, MagnifyingGlass, User } from '@phosphor-icons/react';
 import {
   NavLink as ReactRouterNavLink,
@@ -20,8 +15,8 @@ export default function AppNav() {
   const navigate = useNavigate();
   console.log(currentUsername);
 
-  const accentColor = useColorModeValue('accent.light', 'accent.dark');
-  const secondaryColor = useColorModeValue('secondary.light', 'secondary.dark');
+  // const accentColor = useColorModeValue('accent.light', 'accent.dark');
+  // const secondaryColor = useColorModeValue('secondary.light', 'secondary.dark');
   const isPostPage = location.pathname.includes('post');
   const templateColumns = isPostPage ? 'repeat(5, 20%)' : 'repeat(4, 25%)';
   return (
@@ -49,55 +44,21 @@ export default function AppNav() {
           </Box>
         )}
 
-        <ChakraLink
-          as={ReactRouterNavLink}
-          to="/"
-          h={'full'}
-          display={'flex'}
-          alignItems={'center'}
-          justifyContent={'center'}
-          borderRadius={'10px'}
-          fontSize={'26px'}
-          _hover={{
-            bg: secondaryColor,
-          }}
-          color={accentColor}
-        >
-          <House />
-        </ChakraLink>
-        <ChakraLink
-          as={ReactRouterNavLink}
-          to="/"
-          h={'full'}
-          display={'flex'}
-          alignItems={'center'}
-          justifyContent={'center'}
-          borderRadius={'10px'}
-          fontSize={'26px'}
-          _hover={{
-            bg: secondaryColor,
-          }}
-          color={accentColor}
-        >
-          <MagnifyingGlass />
-        </ChakraLink>
+        <ReactRouterNavLink to={'/'} className="navLink">
+          {({ isActive }) => <House weight={isActive ? 'fill' : 'regular'} />}
+        </ReactRouterNavLink>
+
+        <ReactRouterNavLink to={'/'} className="navLink">
+          {({ isActive }) => (
+            <MagnifyingGlass weight={isActive ? 'fill' : 'regular'} />
+          )}
+        </ReactRouterNavLink>
+
         <CreatePost />
-        <ChakraLink
-          as={ReactRouterNavLink}
-          to={`/${currentUsername}`}
-          h={'full'}
-          display={'flex'}
-          alignItems={'center'}
-          justifyContent={'center'}
-          borderRadius={'10px'}
-          fontSize={'26px'}
-          _hover={{
-            bg: secondaryColor,
-          }}
-          color={accentColor}
-        >
-          <User />
-        </ChakraLink>
+
+        <ReactRouterNavLink to={`/${currentUsername}`} className="navLink">
+          {({ isActive }) => <User weight={isActive ? 'fill' : 'regular'} />}
+        </ReactRouterNavLink>
       </Grid>
     </Box>
   );

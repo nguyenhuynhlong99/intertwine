@@ -34,15 +34,7 @@ interface Props {
 }
 
 export default function EditProfile({ user }: Props) {
-  // const username = getUser().username;
-  // const userId = getUser()?._id;
-  // const userData = useUser(username);
-  // const user = userData?.user;
-  // const isPending = userData?.isPending;
-  // const { _id: userId, ...userValues } = user ? user : {};
   const { editProfile, isUpdating } = useEditProfile(user?.username);
-  // console.log(userData?.user);
-  console.log(user);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const fileRef = useRef<HTMLInputElement | null>(null);
