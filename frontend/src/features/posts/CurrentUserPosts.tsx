@@ -10,6 +10,7 @@ export default function CurrentUserPosts() {
   const isPending = userPostsData?.isPending;
 
   const accentColor = useColorModeValue('accent.light', 'accent.dark');
+  const primaryColor = useColorModeValue('primary.light', 'primary.dark');
 
   console.log(userPosts);
 
@@ -21,7 +22,16 @@ export default function CurrentUserPosts() {
     );
 
   if (!isPending && userPosts?.length === 0) {
-    return <Text>Start your first post</Text>;
+    return (
+      <Text
+        textAlign={'center'}
+        color={primaryColor}
+        fontSize={'lg'}
+        fontWeight={700}
+      >
+        Start your first post
+      </Text>
+    );
   }
 
   return (

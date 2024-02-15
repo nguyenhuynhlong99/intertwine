@@ -11,10 +11,7 @@ const getPost = async (req: Request, res: Response) => {
 
     if (!post) return res.status(404).json({ error: 'Post not found' });
 
-    res.status(200).json({
-      status: 'success',
-      post,
-    });
+    res.status(200).json(post);
   } catch (error) {
     res.status(500).json({ error: getErrorMessage(error) });
     console.error(error);
@@ -74,8 +71,17 @@ const deletePost = async (req: IGetUserAuthInfoRequest, res: Response) => {
 
     if (!post) return res.status(404).json({ error: 'Post not found' });
 
-    if (post.postedBy.toString() !== req.user._id.toString()) {
+    const userId = String(post.postedBy?._id);
+
+    if (userId !== req.user._id.toString()) {
       return res.status(401).json({ error: 'Unauthorized to delete post' });
+    }
+
+    console.log(post);
+
+    if (post.img) {
+      const imgId = post.img.split('/').pop()?.split('.')[0];
+      await cloudinary.uploader.destroy(imgId || '');
     }
 
     await Post.findByIdAndDelete(req.params.id);

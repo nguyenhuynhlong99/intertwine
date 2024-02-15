@@ -25,6 +25,11 @@ export const createPost = async (post: PostBody) => {
   return res.data;
 };
 
+export const deletePost = async (id: string) => {
+  const res = await axios.delete(`/api/posts/${id}`);
+  return res.data;
+};
+
 export const getFeedPosts = async () => {
   const res = await axios.get(`/api/posts/feed`);
   return res.data;

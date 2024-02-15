@@ -12,6 +12,7 @@ interface Post {
   postedBy: {
     profilePic: string;
     username: string;
+    _id: string;
   };
 }
 
@@ -34,6 +35,7 @@ export default function PostList({ posts }: Props) {
               userImg={post?.postedBy?.profilePic}
               username={post?.postedBy?.username}
               createdAt={post?.createdAt}
+              userId={post?.postedBy?._id}
             />
           </Link>
         </Box>

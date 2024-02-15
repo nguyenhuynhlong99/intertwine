@@ -1,7 +1,7 @@
-import { useState } from 'react';
+// import { useState } from 'react';
 import {
   Avatar,
-  Box,
+  // Box,
   Divider,
   Grid,
   GridItem,
@@ -10,13 +10,14 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 // import PostActions from './PostActions';
-import { Heart } from '@phosphor-icons/react';
+// import { Heart } from '@phosphor-icons/react';
+import { BROKEN_LINK_IMG } from '../../utils/userLocalStorage';
 
 interface Props {
   //   replies?: number;
   username: string;
-  avatar: string;
-  likes: number;
+  avatar?: string;
+  // likes: number;
   img?: string;
   content: string;
 }
@@ -25,26 +26,25 @@ export default function Reply({
   // replies,
   username,
   avatar,
-  likes,
+  // likes,
   img,
   content,
 }: Props) {
-  const [liked, setLiked] = useState<boolean>(false);
+  // const [liked, setLiked] = useState<boolean>(false);
 
   return (
     <>
       <Grid
         templateAreas={`"avatar header"
                           "avatar body"
-                          ". body"
-                          ". footer"`}
+                          ". body"`}
         gridTemplateColumns={'auto 1fr'}
         gridTemplateRows={'auto auto 1fr auto'}
         gap={2}
         pt={2}
       >
         <GridItem area={'avatar'}>
-          <Avatar size={'sm'} src={avatar} />
+          <Avatar size={'sm'} src={avatar || BROKEN_LINK_IMG} />
         </GridItem>
 
         <GridItem
@@ -55,7 +55,9 @@ export default function Reply({
         >
           <Text fontWeight={600}>{username}</Text>
 
-          <Text color={useColorModeValue('gray.light', 'gray.dark')}>1d</Text>
+          <Text color={useColorModeValue('gray.light', 'gray.dark')} hidden>
+            1d
+          </Text>
         </GridItem>
 
         <GridItem
@@ -69,7 +71,7 @@ export default function Reply({
           {img && <Image borderRadius={'10px'} src={img} />}
 
           {/* <PostActions liked={liked} setLiked={setLiked} /> */}
-          <Box
+          {/* <Box
             fontSize={'26px'}
             color={useColorModeValue('accent.light', 'accent.dark')}
           >
@@ -77,19 +79,18 @@ export default function Reply({
               className="icon-container"
               onClick={() => setLiked((liked) => !liked)}
             >
-              {/* color="rgb(255, 48, 64)" */}
               {liked ? <Heart weight="fill" /> : <Heart />}
             </button>
-          </Box>
+          </Box> */}
         </GridItem>
-        <GridItem area={'footer'}>
+        {/* <GridItem area={'footer'}>
           <Box>
-            {/* <Text
+            <Text
               color={useColorModeValue('gray.light', 'gray.dark')}
               fontSize={'sm'}
             >
               {replies} replies
-            </Text> */}
+            </Text>
             <Text
               color={useColorModeValue('gray.light', 'gray.dark')}
               fontSize={'sm'}
@@ -97,7 +98,7 @@ export default function Reply({
               {likes + (liked ? 1 : 0)} likes
             </Text>
           </Box>
-        </GridItem>
+        </GridItem> */}
       </Grid>
       <Divider
         my={2}

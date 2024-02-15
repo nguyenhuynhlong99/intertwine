@@ -15,10 +15,13 @@ import { FormEvent, useMemo, useState } from 'react';
 import { BROKEN_LINK_IMG, getUser } from '../../utils/userLocalStorage';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
+import DeletePost from './DeletePost';
 
 export interface Reply {
   userId: string;
   userProfilePic: string;
+  text: string;
+  username: string;
 }
 
 interface Props {
@@ -31,6 +34,7 @@ interface Props {
   userImg?: string;
   username?: string;
   createdAt?: string;
+  userId?: string;
 }
 
 export default function PostCard({
@@ -43,8 +47,9 @@ export default function PostCard({
   userImg,
   username,
   createdAt,
+  userId,
 }: Props) {
-  const currentUserId = getUser()._id;
+  const currentUserId = getUser()?._id;
   const [liked, setLiked] = useState<boolean>(likes.includes(currentUserId));
   const navigate = useNavigate();
 
@@ -106,13 +111,17 @@ export default function PostCard({
             {username}
           </Text>
 
-          <Text
-            fontWeight={400}
-            fontSize={'sm'}
-            color={useColorModeValue('gray.light', 'gray.dark')}
-          >
-            {formatDistanceToNow(new Date(String(createdAt)))}
-          </Text>
+          <Flex alignItems={'center'} gap={1}>
+            <Text
+              fontWeight={400}
+              fontSize={'sm'}
+              color={useColorModeValue('gray.light', 'gray.dark')}
+            >
+              {formatDistanceToNow(new Date(String(createdAt)))}
+            </Text>
+
+            {currentUserId === userId && <DeletePost postId={postId} />}
+          </Flex>
         </GridItem>
 
         <GridItem
