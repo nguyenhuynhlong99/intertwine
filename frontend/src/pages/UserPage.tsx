@@ -1,8 +1,9 @@
-import { Container, Flex, Spinner, useColorModeValue } from '@chakra-ui/react';
+import { Flex, Spinner, useColorModeValue } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 import { useUser } from '../features/auth/useUser';
 import UserInfo from '../components/UserInfo';
 import CurrentUserPosts from '../features/posts/CurrentUserPosts';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 
 export default function UserPage() {
   const { username } = useParams();
@@ -12,6 +13,8 @@ export default function UserPage() {
   const user = userData?.user;
 
   const accentColor = useColorModeValue('accent.light', 'accent.dark');
+
+  useDocumentTitle(`${user?.name} (${username})`);
 
   if (isGettingUserData)
     return (
@@ -24,10 +27,10 @@ export default function UserPage() {
   if (!user && !isGettingUserData) return null;
 
   return (
-    <Container maxW="572px">
+    <>
       <UserInfo />
 
       <CurrentUserPosts />
-    </Container>
+    </>
   );
 }

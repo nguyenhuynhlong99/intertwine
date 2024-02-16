@@ -22,7 +22,14 @@ interface Props {
 
 export default function PostList({ posts }: Props) {
   return (
-    <Box as="ul" display={'flex'} flexDirection={'column'} gap={6} mt={4}>
+    <Box
+      as="ul"
+      display={'flex'}
+      flexDirection={'column'}
+      gap={6}
+      mt={4}
+      mb={'100px'}
+    >
       {posts?.map((post) => (
         <Box key={`post-${post._id}`} as="li">
           <Link to={`/${post?.postedBy?.username}/post/${post?._id}`}>

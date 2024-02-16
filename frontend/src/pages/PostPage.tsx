@@ -1,4 +1,4 @@
-import { Container, Flex, Spinner, useColorModeValue } from '@chakra-ui/react';
+import { Flex, Spinner, useColorModeValue } from '@chakra-ui/react';
 // import PostCard from '../features/posts/PostCard';
 import Reply from '../features/posts/Reply';
 import { useParams } from 'react-router-dom';
@@ -36,7 +36,7 @@ export default function PostPage() {
   console.log(post);
 
   return (
-    <Container maxW="572px" mt={4}>
+    <>
       <PostCard
         variant="postDetail"
         postId={post?._id}
@@ -66,6 +66,6 @@ export default function PostPage() {
         img="https://pbs.twimg.com/media/EqTlmUCWMAEgJev.jpg"
         content="You know me!"
       /> */}
-    </Container>
+    </>
   );
 }
