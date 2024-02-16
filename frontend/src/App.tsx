@@ -12,6 +12,7 @@ import PostPage from './pages/PostPage';
 import AuthPage from './pages/AuthPage';
 import HomePage from './pages/HomePage';
 import ProtectedRoute from './components/ProtectedRoute';
+import SearchPage from './pages/SearchPage';
 
 const styles = {
   global: (props: GlobalStyleProps) => ({
@@ -154,6 +155,7 @@ function App() {
               }
             />
             <Route path=":username/post/:pid" element={<PostPage />} />
+            <Route path="search" element={<SearchPage />} />
           </Route>
           <Route path="/auth" element={<AuthPage />} />
         </Routes>

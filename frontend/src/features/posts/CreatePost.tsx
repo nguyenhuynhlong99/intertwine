@@ -83,7 +83,7 @@ export default function CreatePost() {
         bg={'transparent'}
         h={'full'}
         borderRadius={'10px'}
-        fontSize={'26px'}
+        fontSize={'32px'}
         color={accentColor}
         _hover={{
           bg: secondaryColor,

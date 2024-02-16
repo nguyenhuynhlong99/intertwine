@@ -1,4 +1,4 @@
-import { Box, Grid } from '@chakra-ui/react';
+import { Box, Grid, useColorModeValue } from '@chakra-ui/react';
 import { ArrowLeft, MagnifyingGlass, User } from '@phosphor-icons/react';
 import {
   NavLink as ReactRouterNavLink,
@@ -15,16 +15,22 @@ export default function AppNav() {
   const navigate = useNavigate();
   console.log(currentUsername);
 
+  const bgColor = useColorModeValue(
+    'rgba(229, 235, 250, 0.75)',
+    'rgba(5, 11, 26, 0.75)'
+  );
   // const accentColor = useColorModeValue('accent.light', 'accent.dark');
   // const secondaryColor = useColorModeValue('secondary.light', 'secondary.dark');
   const isPostPage = location.pathname.includes('post');
   const templateColumns = isPostPage ? 'repeat(5, 20%)' : 'repeat(4, 25%)';
   return (
     <Box
-      h={'full'}
+      h={'74px'}
       w={'100vw'}
       maxWidth={{ md: '440px', xl: '620px' }}
-      display={{ base: 'none', md: 'block' }}
+      bgColor={bgColor}
+      backdropFilter={'blur(16px)'}
+      zIndex={10}
     >
       <Grid
         as="nav"
@@ -48,7 +54,7 @@ export default function AppNav() {
           {({ isActive }) => <House weight={isActive ? 'fill' : 'regular'} />}
         </ReactRouterNavLink>
 
-        <ReactRouterNavLink to={'/'} className="navLink">
+        <ReactRouterNavLink to={'/search'} className="navLink">
           {({ isActive }) => (
             <MagnifyingGlass weight={isActive ? 'fill' : 'regular'} />
           )}

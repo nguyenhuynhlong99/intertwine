@@ -1,10 +1,12 @@
-import { Container } from '@chakra-ui/react';
 import FeedPosts from '../features/posts/FeedPosts';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 
 export default function HomePage() {
+  useDocumentTitle('Intertwine');
+
   return (
-    <Container maxW="572px">
+    <>
       <FeedPosts />
-    </Container>
+    </>
   );
 }
