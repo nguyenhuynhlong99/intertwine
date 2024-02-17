@@ -190,6 +190,76 @@ const getCurrentUser = async (req: IGetUserAuthInfoRequest, res: Response) => {
   }
 };
 
+const getAllUsers = async (req: Request, res: Response) => {
+  try {
+    // Filtering
+    const queryObj = { ...req.query };
+    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    excludedFields.forEach((el) => delete queryObj[el]);
+
+    //1B) Advanced filtering
+    let queryString = JSON.stringify(queryObj);
+    queryString = queryString.replace(
+      /\b(gte|gt|lte|lt)\b/g,
+      (match) => `$${match}`
+    );
+
+    if (queryObj.username) {
+      queryObj.username = { $regex: queryObj.username, $options: 'i' };
+    }
+
+    let query = User.find({
+      ...queryObj,
+    });
+
+    //Sort
+    if (req.query.sort) {
+      const sortQuery = String(req.query.sort);
+      const sortBy = sortQuery.split(',').join(' ');
+      query = query.sort(sortBy);
+    } else {
+      query = query.sort('-createdAt');
+    }
+
+    //Limiting fields
+    if (req.query.fields) {
+      const fields = String(req.query.fields).split(',').join(' ');
+      query = query.select(fields);
+    } else {
+      query.select('-__v');
+    }
+
+    /* Pagination */
+    const page = parseInt(String(req.query.page)) || 1;
+    const limit = parseInt(String(req.query.limit)) || 10;
+    const skip = (page - 1) * limit;
+
+    query = query.skip(skip).limit(limit);
+
+    if (req.query.page) {
+      const usersCount = await User.countDocuments();
+      if (skip >= usersCount) {
+        return res.status(404).json({ error: 'Page not found' });
+      }
+    }
+
+    const users = await query;
+
+    if (!users) return res.status(404).json({ error: 'Users not found!' });
+
+    res.status(200).json({
+      users,
+      total: users.length,
+      page,
+      limit,
+      totalPages: Math.ceil(users.length / limit),
+    });
+  } catch (error) {
+    res.status(500).json({ error: getErrorMessage(error) });
+    console.error('Error in updateUser: ', getErrorMessage(error));
+  }
+};
+
 export {
   signupUser,
   loginUser,
@@ -198,4 +268,5 @@ export {
   updateUser,
   getUserProfile,
   getCurrentUser,
+  getAllUsers,
 };
