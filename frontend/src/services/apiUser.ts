@@ -9,6 +9,19 @@ export interface UpdateProfileBody {
   email?: string;
 }
 
+export interface UserQuery {
+  page?: number;
+  limit?: number;
+  username?: string;
+}
+
+export const getAllUsers = async (query: UserQuery) => {
+  const params = { ...query };
+
+  const res = await axios.get(`/api/users`, { params });
+  return res.data;
+};
+
 export const getProfile = async (username: string) => {
   const res = await axios.get(`/api/users/${username}`);
   return res.data;

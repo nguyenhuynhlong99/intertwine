@@ -46,7 +46,7 @@ export default function AppNav() {
             h={50}
             onClick={() => navigate(-1)}
           >
-            <ArrowLeft size={26} />
+            <ArrowLeft size={26} weight="bold" />
           </Box>
         )}
 
@@ -56,7 +56,7 @@ export default function AppNav() {
 
         <ReactRouterNavLink to={'/search'} className="navLink">
           {({ isActive }) => (
-            <MagnifyingGlass weight={isActive ? 'fill' : 'regular'} />
+            <MagnifyingGlass weight={isActive ? 'bold' : 'regular'} />
           )}
         </ReactRouterNavLink>
 

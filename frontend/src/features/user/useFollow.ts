@@ -11,6 +11,7 @@ export function useFollow(username: string) {
     mutationFn: (id: string) => followUnfollow(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user', username] });
+      queryClient.invalidateQueries({ queryKey: ['users'] });
     },
     onError: (err) => {
       console.log(err);
