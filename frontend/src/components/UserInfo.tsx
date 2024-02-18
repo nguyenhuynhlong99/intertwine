@@ -74,7 +74,9 @@ export default function UserInfo() {
         {user?.followers?.length} followers
       </Text>
       {username === currentUser?.username && <EditProfile user={user} />}
-      {username !== currentUser?.username && <Follow />}
+      {username !== currentUser?.username && (
+        <Follow width="full" user={user} />
+      )}
 
       <Tabs marginTop={4} position="relative">
         <TabList borderColor={grayColor} borderBottom={'1px solid'}>

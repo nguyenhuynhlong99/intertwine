@@ -190,8 +190,14 @@ const getCurrentUser = async (req: IGetUserAuthInfoRequest, res: Response) => {
   }
 };
 
-const getAllUsers = async (req: Request, res: Response) => {
+const getAllUsers = async (req: IGetUserAuthInfoRequest, res: Response) => {
   try {
+    const userId = req.user._id;
+    const user = await User.findById(userId);
+
+    if (!user)
+      return res.status(404).json({ error: 'User not found! Please log in' });
+
     // Filtering
     const queryObj = { ...req.query };
     const excludedFields = ['page', 'sort', 'limit', 'fields'];
@@ -210,6 +216,7 @@ const getAllUsers = async (req: Request, res: Response) => {
 
     let query = User.find({
       ...queryObj,
+      _id: { $ne: user._id },
     });
 
     //Sort

@@ -13,14 +13,14 @@ import {
 
 const router = express.Router();
 
-router.get('/', getAllUsers);
+router.get('/', protectRoute, getAllUsers);
+router.get('/whoami', protectRoute, getCurrentUser);
 router.post('/signup', signupUser);
 router.post('/login', loginUser);
 router.post('/logout', logoutUser);
 
 router.patch('/follow/:id', protectRoute, followUnfollowUser);
 router.patch('/update/:id', protectRoute, updateUser);
-router.get('/whoami', protectRoute, getCurrentUser);
 router.get('/:username', getUserProfile);
 
 export default router;
