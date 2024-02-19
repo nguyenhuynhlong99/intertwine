@@ -3,6 +3,7 @@ import { useFollow } from './useFollow';
 import useShowToast from '../../hooks/useShowToast';
 import { Button, useColorModeValue } from '@chakra-ui/react';
 import { getUser } from '../../utils/userLocalStorage';
+import { FormEvent } from 'react';
 
 interface Props {
   width?: string;
@@ -24,7 +25,8 @@ export default function Follow({ width, user }: Props) {
   const secondaryColor = useColorModeValue('secondary.light', 'secondary.dark');
   const grayColor = useColorModeValue('gray.light', 'gray.dark');
 
-  async function handleFollowUnfollow() {
+  async function handleFollowUnfollow(e: FormEvent) {
+    e.preventDefault();
     followUnfollowUser(user?._id, {
       onSuccess: () => {
         showToast('Success', 'Follow/Unfollow successfully', 'success');

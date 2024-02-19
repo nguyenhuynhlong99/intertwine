@@ -10,6 +10,7 @@ interface Reply {
   username: string;
   userProfilePic: string;
   text: string;
+  createdAt: string;
 }
 
 export default function PostPage() {
@@ -56,6 +57,8 @@ export default function PostPage() {
           username={reply?.username}
           avatar={reply?.userProfilePic}
           content={reply?.text}
+          createdAt={reply?.createdAt}
+          replyId={reply?._id}
         />
       ))}
 

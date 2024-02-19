@@ -44,3 +44,8 @@ export const replyToPost = async (id: string, reply: ReplyBody) => {
   const res = await axios.patch(`/api/posts/reply/${id}`, reply);
   return res.data;
 };
+
+export const deleteReply = async (postId: string, replyId: string) => {
+  const res = await axios.patch(`/api/posts/${postId}/reply/${replyId}/delete`);
+  return res.data;
+};
