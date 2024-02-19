@@ -11,7 +11,8 @@
   },
   "include": ["src/**/*"],
   "ts-node": {
-    "esm": true
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
   },
   "exclude": ["node_modules"]
 }
