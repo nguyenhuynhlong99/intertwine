@@ -13,18 +13,6 @@ interface LoginBody {
 }
 
 export const signup = async (user: SignUpBody) => {
-  // try {
-  //   const res = await axios.post('/api/users/signup', user);
-  //   return res.data;
-  // } catch (error) {
-  //   if (axios.isAxiosError(error)) {
-  //     console.log(error.status);
-  //     console.error(error.response);
-  //     return error.response?.data;
-  //   } else {
-  //     console.error(error);
-  //   }
-  // }
   // Don't need try catch because of React Query
   const res = await axios.post('/api/users/signup', user);
   return res.data;

@@ -20,8 +20,8 @@ function useReplyToPost(id: string) {
       replyToPostApi(id, reply),
     onSuccess: () => {
       showToast('Success', 'Replied to post successfully', 'success');
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
       queryClient.invalidateQueries({ queryKey: ['post', id] });
-      // queryClient.invalidateQueries({ queryKey: ['posts'] });
     },
     onError: (err: Error | AxiosError) => {
       console.log(err);
