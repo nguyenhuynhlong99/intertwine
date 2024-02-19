@@ -149,6 +149,39 @@ const replyToPost = async (req: IGetUserAuthInfoRequest, res: Response) => {
   }
 };
 
+const deleteReply = async (req: IGetUserAuthInfoRequest, res: Response) => {
+  try {
+    const userId = String(req.user._id);
+    const postId = req.params.pid;
+    const replyId = req.params.id;
+
+    const post = await Post.findById(postId);
+    if (!post) return res.status(404).json({ error: 'Post not found' });
+
+    const replies = post?.replies;
+    const replyToDelete = replies?.find((reply) => reply._id);
+    if (!replyToDelete)
+      return res.status(404).json({ error: 'Reply not found' });
+
+    if (String(replyToDelete.userId) !== userId)
+      return res
+        .status(401)
+        .json({ error: "You are not allow to delete other user's comment" });
+
+    const updatedReplies = replies?.filter(
+      (reply) => String(reply._id) !== replyId
+    );
+
+    post.replies = updatedReplies;
+    await post.save();
+
+    res.status(200).json({ message: 'Delete reply successfully' });
+  } catch (error) {
+    res.status(500).json({ error: getErrorMessage(error) });
+    console.error(error);
+  }
+};
+
 const getFeedPosts = async (req: IGetUserAuthInfoRequest, res: Response) => {
   try {
     const userId = req.user._id;
@@ -195,4 +228,5 @@ export {
   replyToPost,
   getFeedPosts,
   getUserPosts,
+  deleteReply,
 };

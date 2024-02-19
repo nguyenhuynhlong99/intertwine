@@ -44,6 +44,7 @@ export default function SearchUser() {
           base: '44px',
           md: '60px',
         }}
+        mb={2}
       >
         <InputLeftElement
           pointerEvents={'none'}

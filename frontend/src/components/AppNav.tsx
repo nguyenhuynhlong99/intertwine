@@ -13,7 +13,6 @@ export default function AppNav() {
   const currentUsername = getUser()?.username;
   const location = useLocation();
   const navigate = useNavigate();
-  console.log(currentUsername);
 
   const bgColor = useColorModeValue(
     'rgba(229, 235, 250, 0.75)',
@@ -21,8 +20,8 @@ export default function AppNav() {
   );
   // const accentColor = useColorModeValue('accent.light', 'accent.dark');
   // const secondaryColor = useColorModeValue('secondary.light', 'secondary.dark');
-  const isPostPage = location.pathname.includes('post');
-  const templateColumns = isPostPage ? 'repeat(5, 20%)' : 'repeat(4, 25%)';
+  const isHomePage = location.pathname === '/';
+  const templateColumns = !isHomePage ? 'repeat(5, 20%)' : 'repeat(4, 25%)';
   return (
     <Box
       h={'74px'}
@@ -33,14 +32,14 @@ export default function AppNav() {
       zIndex={10}
     >
       <Grid
-        as="nav"
+        as={'nav'}
         alignItems={'center'}
         templateColumns={templateColumns}
         h={'full'}
       >
-        {isPostPage && (
+        {!isHomePage && (
           <Box
-            as="button"
+            as={'button'}
             className="icon-container"
             w={50}
             h={50}

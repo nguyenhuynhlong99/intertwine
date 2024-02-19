@@ -2,9 +2,12 @@ import { useParams } from 'react-router-dom';
 import { useUserPosts } from './useUserPosts';
 import PostList from './PostList';
 import { Flex, Spinner, Text, useColorModeValue } from '@chakra-ui/react';
+import { getUser } from '../../utils/userLocalStorage';
 
 export default function CurrentUserPosts() {
   const { username } = useParams();
+  const currentUser = getUser();
+
   const userPostsData = useUserPosts(String(username));
   const userPosts = userPostsData?.userPosts;
   const isPending = userPostsData?.isPending;
@@ -29,7 +32,9 @@ export default function CurrentUserPosts() {
         fontSize={'lg'}
         fontWeight={700}
       >
-        Start your first post
+        {currentUser?.username === username
+          ? 'Start your first post'
+          : "This user hasn't posted yet"}
       </Text>
     );
   }

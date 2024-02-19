@@ -27,8 +27,10 @@ export default function UserSearchCard({ user }: Props) {
         <GridItem>
           <Flex alignItems={'center'} justifyContent={'space-between'}>
             <Box>
-              <Text>{user.username}</Text>
-              <Text>{user.name}</Text>
+              <Text fontWeight={600}>{user.username}</Text>
+              <Text color={useColorModeValue('gray.light', 'gray.dark')}>
+                {user.name}
+              </Text>
             </Box>
 
             <Follow user={user} />

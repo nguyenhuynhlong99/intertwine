@@ -6,6 +6,8 @@ interface Reply {
   text: string;
   userProfilePic?: string;
   username?: string;
+  createdAt?: string;
+  _id?: mongoose.Schema.Types.ObjectId;
 }
 
 interface Post {
@@ -49,6 +51,10 @@ const postSchema = new mongoose.Schema<Post>(
         },
         username: {
           type: String,
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
         },
       },
     ],
