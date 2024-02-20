@@ -220,6 +220,20 @@ const getUserPosts = async (req: IGetUserAuthInfoRequest, res: Response) => {
   }
 };
 
+const getUserReplies = async (req: IGetUserAuthInfoRequest, res: Response) => {
+  try {
+    const currentUserId = req.user._id;
+    const posts = await Post.find({ 'replies.userId': { $eq: currentUserId } });
+
+    if (!posts) return res.status(404).json({ error: 'No replies found' });
+
+    res.status(200).json({ posts });
+  } catch (error) {
+    res.status(500).json({ error: getErrorMessage(error) });
+    console.error(error);
+  }
+};
+
 export {
   createPost,
   getPost,
@@ -229,4 +243,5 @@ export {
   getFeedPosts,
   getUserPosts,
   deleteReply,
+  getUserReplies,
 };

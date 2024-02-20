@@ -8,6 +8,7 @@ import {
   replyToPost,
   getUserPosts,
   deleteReply,
+  getUserReplies,
 } from '../controllers/postController.js';
 import protectRoute from '../middlewares/protectRoute.js';
 
@@ -16,6 +17,7 @@ const router = express.Router();
 router.patch('/like/:id', protectRoute, likeUnlikePost);
 router.patch('/reply/:id', protectRoute, replyToPost);
 router.patch('/:pid/reply/:id/delete', protectRoute, deleteReply);
+router.get('/replies', protectRoute, getUserReplies);
 
 router.get('/feed', protectRoute, getFeedPosts);
 router.post('/', protectRoute, createPost);
