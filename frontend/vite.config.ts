@@ -7,8 +7,9 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
+        // target: 'https://intertwine-server.onrender.com',
         target: 'http://localhost:6000',
-        // changeOrigin: true,
+        changeOrigin: true,
         secure: false,
       },
     },

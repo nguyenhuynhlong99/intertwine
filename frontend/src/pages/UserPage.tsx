@@ -2,8 +2,8 @@ import { Flex, Spinner, useColorModeValue } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 import { useUser } from '../features/auth/useUser';
 import UserInfo from '../components/UserInfo';
-import CurrentUserPosts from '../features/posts/CurrentUserPosts';
 import useDocumentTitle from '../hooks/useDocumentTitle';
+import CurrentUserAllPosts from '../features/posts/CurrentUserAllPosts';
 
 export default function UserPage() {
   const { username } = useParams();
@@ -30,7 +30,7 @@ export default function UserPage() {
     <>
       <UserInfo />
 
-      <CurrentUserPosts />
+      <CurrentUserAllPosts />
     </>
   );
 }

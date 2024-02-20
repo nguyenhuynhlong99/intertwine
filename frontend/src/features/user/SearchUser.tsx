@@ -1,7 +1,9 @@
 import {
+  Flex,
   Input,
   InputGroup,
   InputLeftElement,
+  Spinner,
   useColorModeValue,
 } from '@chakra-ui/react';
 import { MagnifyingGlass } from '@phosphor-icons/react';
@@ -23,8 +25,10 @@ export default function SearchUser() {
 
   const usersData = useUsers({ username: search });
   const users: UserSearch[] = usersData?.data?.users;
+  const isLoading = usersData?.isLoading;
 
   const grayColor = useColorModeValue('gray.light', 'gray.dark');
+  const accentColor = useColorModeValue('accent.light', 'accent.dark');
 
   const debouncedChangeHandler = useMemo(
     () => debounce(handleOnChange, 500),
@@ -34,8 +38,6 @@ export default function SearchUser() {
   function handleOnChange(e: ChangeEvent<HTMLInputElement>) {
     setSearch(e.target.value);
   }
-
-  console.log(users);
 
   return (
     <>
@@ -65,7 +67,13 @@ export default function SearchUser() {
         />
       </InputGroup>
 
-      <UserSearchList users={users} />
+      {isLoading ? (
+        <Flex justifyContent={'center'}>
+          <Spinner size={'xl'} color={accentColor} />
+        </Flex>
+      ) : (
+        <UserSearchList users={users} />
+      )}
     </>
   );
 }

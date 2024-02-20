@@ -1,14 +1,4 @@
-import {
-  Avatar,
-  Box,
-  Flex,
-  Tab,
-  TabIndicator,
-  TabList,
-  Tabs,
-  Text,
-  useColorModeValue,
-} from '@chakra-ui/react';
+import { Avatar, Box, Flex, Text, useColorModeValue } from '@chakra-ui/react';
 import EditProfile from '../features/auth/EditProfile';
 import Follow from '../features/user/Follow';
 import { useUser } from '../features/auth/useUser';
@@ -20,9 +10,6 @@ export default function UserInfo() {
   const currentUser = getUser();
   const userData = useUser(String(username));
   const user = userData?.user;
-
-  const activeTab = useColorModeValue('accent.light', 'accent.dark');
-  const grayColor = useColorModeValue('gray.light', 'gray.dark');
 
   return (
     <Box marginTop={4} mb={6}>
@@ -77,37 +64,6 @@ export default function UserInfo() {
       {username !== currentUser?.username && (
         <Follow width="full" user={user} />
       )}
-
-      <Tabs marginTop={4} position="relative">
-        <TabList borderColor={grayColor} borderBottom={'1px solid'}>
-          <Tab
-            fontSize={'sm'}
-            fontWeight={700}
-            w={'50%'}
-            borderBottom={grayColor}
-            color={grayColor}
-            _selected={{ color: activeTab, backgroundColor: 'transparent' }}
-          >
-            Posts
-          </Tab>
-          <Tab
-            fontSize={'sm'}
-            fontWeight={700}
-            w={'50%'}
-            borderBottom={grayColor}
-            color={grayColor}
-            _selected={{ color: activeTab, backgroundColor: 'transparent' }}
-          >
-            Replies
-          </Tab>
-        </TabList>
-        <TabIndicator
-          mt="-1.5px"
-          height="2px"
-          bg={useColorModeValue('accent.light', 'accent.dark')}
-          borderRadius="1px"
-        />
-      </Tabs>
     </Box>
   );
 }

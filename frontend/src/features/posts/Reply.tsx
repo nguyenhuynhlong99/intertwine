@@ -38,7 +38,7 @@ export default function Reply({
                           "avatar body"
                           ". body"`}
         gridTemplateColumns={'auto 1fr'}
-        gridTemplateRows={'auto auto 1fr auto'}
+        gridTemplateRows={'auto 1fr auto'}
         gap={2}
         pt={2}
       >

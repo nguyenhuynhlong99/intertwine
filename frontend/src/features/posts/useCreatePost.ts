@@ -9,10 +9,9 @@ function useCreatePost() {
 
   const { mutate: createPost, isPending: isCreating } = useMutation({
     mutationFn: createPostApi,
-    onSuccess: (data) => {
-      console.log(data);
-      queryClient.invalidateQueries({ queryKey: ['posts'] });
+    onSuccess: () => {
       showToast('Success', 'Created post successfully', 'success');
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
     },
     onError: (err: Error | AxiosError) => {
       console.log(err);
