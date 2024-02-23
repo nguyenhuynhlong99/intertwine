@@ -2,10 +2,8 @@ import mongoose, { ObjectId, PopulatedDoc, Query, Document } from 'mongoose';
 import { IUser } from './User.js';
 
 interface Reply {
-  userId: mongoose.Schema.Types.ObjectId;
+  user: PopulatedDoc<Document<ObjectId> & IUser>;
   text: string;
-  userProfilePic?: string;
-  username?: string;
   createdAt?: string;
   _id?: mongoose.Schema.Types.ObjectId;
 }
@@ -37,7 +35,7 @@ const postSchema = new mongoose.Schema<Post>(
     likes: { type: [mongoose.Schema.Types.ObjectId], ref: 'User', default: [] },
     replies: [
       {
-        userId: {
+        user: {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'User',
           required: true,
@@ -45,12 +43,6 @@ const postSchema = new mongoose.Schema<Post>(
         text: {
           type: String,
           required: true,
-        },
-        userProfilePic: {
-          type: String,
-        },
-        username: {
-          type: String,
         },
         createdAt: {
           type: Date,
@@ -65,7 +57,10 @@ const postSchema = new mongoose.Schema<Post>(
 );
 
 postSchema.pre<Query<unknown, unknown>>(/^find/, function (next) {
-  this.populate('postedBy');
+  this.populate('postedBy').populate(
+    'replies.user',
+    'name username profilePic'
+  );
   next();
 });
 

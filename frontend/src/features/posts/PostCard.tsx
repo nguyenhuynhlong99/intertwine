@@ -16,13 +16,7 @@ import { BROKEN_LINK_IMG, getUser } from '../../utils/userLocalStorage';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import DeletePost from './DeletePost';
-
-export interface Reply {
-  userId: string;
-  userProfilePic: string;
-  text: string;
-  username: string;
-}
+import { Reply } from './UserReplies';
 
 interface Props {
   postId: string;
@@ -58,8 +52,8 @@ export default function PostCard({
 
     const filteredDups = replies?.filter((reply) => {
       if (seen.size === 3) return;
-      const duplicate = seen.has(reply.userId);
-      seen.add(reply.userId);
+      const duplicate = seen.has(reply.user._id);
+      seen.add(reply.user._id);
       return !duplicate;
     });
 
@@ -181,7 +175,7 @@ export default function PostCard({
               <Flex alignItems={'center'} justifyContent={'center'}>
                 <Avatar
                   size={'2xs'}
-                  src={filteredDuplicateUsers[0]?.userProfilePic}
+                  src={filteredDuplicateUsers[0]?.user.profilePic}
                 />
               </Flex>
             )}
@@ -190,13 +184,13 @@ export default function PostCard({
               <Flex alignItems={'center'}>
                 <Avatar
                   size={'2xs'}
-                  src={filteredDuplicateUsers[0]?.userProfilePic}
+                  src={filteredDuplicateUsers[0]?.user.profilePic}
                 />
                 <Avatar
                   border={`1px solid ${bgColor}`}
                   ml={'-2px'}
                   size={'2xs'}
-                  src={filteredDuplicateUsers[1]?.userProfilePic}
+                  src={filteredDuplicateUsers[1]?.user.profilePic}
                 />
               </Flex>
             )}
@@ -208,21 +202,21 @@ export default function PostCard({
                   top={0}
                   right={0}
                   size={'2xs'}
-                  src={filteredDuplicateUsers[0]?.userProfilePic}
+                  src={filteredDuplicateUsers[0]?.user.profilePic}
                 />
                 <Avatar
                   position={'absolute'}
                   top={'7px'}
                   left={'0'}
                   size={'2xs'}
-                  src={filteredDuplicateUsers[1]?.userProfilePic}
+                  src={filteredDuplicateUsers[1]?.user.profilePic}
                 />
                 <Avatar
                   position={'absolute'}
                   bottom={0}
                   left={'16px'}
                   size={'2xs'}
-                  src={filteredDuplicateUsers[2]?.userProfilePic}
+                  src={filteredDuplicateUsers[2]?.user.profilePic}
                 />{' '}
               </>
             )}

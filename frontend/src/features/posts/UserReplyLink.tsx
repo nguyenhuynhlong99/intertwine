@@ -19,6 +19,7 @@ interface Props {
 
 export default function UserReplyLink({ reply, postId }: Props) {
   const { postedBy, replies } = reply;
+  console.log(replies);
 
   const grayColor = useColorModeValue('gray.light', 'gray.dark');
   const secondaryColor = useColorModeValue('secondary.light', 'secondary.dark');
@@ -88,7 +89,10 @@ export default function UserReplyLink({ reply, postId }: Props) {
           mb={6}
         >
           <GridItem area={'avatar'}>
-            <Avatar size={'sm'} src={reply.userProfilePic || BROKEN_LINK_IMG} />
+            <Avatar
+              size={'sm'}
+              src={reply.user.profilePic || BROKEN_LINK_IMG}
+            />
           </GridItem>
 
           <GridItem
@@ -97,7 +101,7 @@ export default function UserReplyLink({ reply, postId }: Props) {
             alignItems={'center'}
             justifyContent={'space-between'}
           >
-            <Text fontWeight={600}>{reply.username}</Text>
+            <Text fontWeight={600}>{reply.user.username}</Text>
 
             <Flex alignItems={'center'} gap={1}>
               <Text color={grayColor}>

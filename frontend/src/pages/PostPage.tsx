@@ -4,21 +4,22 @@ import Reply from '../features/posts/Reply';
 import { useParams } from 'react-router-dom';
 import usePost from '../features/posts/usePost';
 import PostCard from '../features/posts/PostCard';
+import { Reply as IReply } from '../features/posts/UserReplies';
 
-interface Reply {
-  _id: string;
-  username: string;
-  userProfilePic: string;
-  text: string;
-  createdAt: string;
-}
+// interface Reply {
+//   _id: string;
+//   username: string;
+//   userProfilePic: string;
+//   text: string;
+//   createdAt: string;
+// }
 
 export default function PostPage() {
   const { pid: postId } = useParams();
 
   const postData = usePost(String(postId));
   const post = postData?.post;
-  const replies: Reply[] = post?.replies;
+  const replies: IReply[] = post?.replies;
 
   const accentColor = useColorModeValue('accent.light', 'accent.dark');
 
@@ -54,8 +55,8 @@ export default function PostPage() {
       {replies?.map((reply) => (
         <Reply
           key={reply._id}
-          username={reply?.username}
-          avatar={reply?.userProfilePic}
+          username={reply?.user.username}
+          avatar={reply?.user.profilePic}
           content={reply?.text}
           createdAt={reply?.createdAt}
           replyId={reply?._id}
