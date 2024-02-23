@@ -50,7 +50,7 @@ export const deleteReply = async (postId: string, replyId: string) => {
   return res.data;
 };
 
-export const getAllReplies = async () => {
-  const res = await axios.get(`/api/posts/replies`);
+export const getUserReplies = async (username: string) => {
+  const res = await axios.get(`/api/posts/user/${username}/replies`);
   return res.data;
 };

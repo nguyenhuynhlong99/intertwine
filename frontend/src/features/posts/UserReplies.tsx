@@ -2,11 +2,16 @@ import { Box, Flex, Spinner, Text, useColorModeValue } from '@chakra-ui/react';
 import { useReplies } from './useReplies';
 import UserReplyLink from './UserReplyLink';
 
-interface Reply {
+export interface Reply {
+  _id: string;
   createdAt: string;
-  username: string;
-  userProfilePic: string;
   text: string;
+  user: {
+    _id: string;
+    name: string;
+    profilePic: string;
+    username: string;
+  };
 }
 
 export interface IUserReply {

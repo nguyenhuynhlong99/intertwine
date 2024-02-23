@@ -11,6 +11,7 @@ export interface IUser {
   followers?: string[];
   following?: string[];
   bio?: string;
+  _id?: mongoose.Schema.Types.ObjectId;
 }
 
 interface UserModel extends mongoose.Model<IUser> {

@@ -60,6 +60,7 @@ export default function DeletePost({ postId }: Props) {
         leastDestructiveRef={cancelRef}
         onClose={onClose}
         isCentered
+        preserveScrollBarGap
       >
         <AlertDialogOverlay>
           <AlertDialogContent

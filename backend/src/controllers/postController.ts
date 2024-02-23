@@ -77,8 +77,6 @@ const deletePost = async (req: IGetUserAuthInfoRequest, res: Response) => {
       return res.status(401).json({ error: 'Unauthorized to delete post' });
     }
 
-    console.log(post);
-
     if (post.img) {
       const imgId = post.img.split('/').pop()?.split('.')[0];
       await cloudinary.uploader.destroy(imgId || '');
@@ -128,8 +126,10 @@ const replyToPost = async (req: IGetUserAuthInfoRequest, res: Response) => {
     const postId = req.params.id;
 
     const userId = req.user._id;
-    const userProfilePic = req.user.profilePic;
-    const username = req.user.username;
+
+    const user = await User.findById(userId);
+
+    if (!user) return res.status(404).json({ error: 'User not found' });
 
     if (!text) return res.status(400).json({ error: 'Text field is required' });
 
@@ -137,7 +137,7 @@ const replyToPost = async (req: IGetUserAuthInfoRequest, res: Response) => {
 
     if (!post) return res.status(404).json({ error: 'Post not found' });
 
-    const reply = { userId, text, userProfilePic, username };
+    const reply = { user: userId, text };
 
     post.replies?.push(reply);
     await post.save();
@@ -159,11 +159,13 @@ const deleteReply = async (req: IGetUserAuthInfoRequest, res: Response) => {
     if (!post) return res.status(404).json({ error: 'Post not found' });
 
     const replies = post?.replies;
-    const replyToDelete = replies?.find((reply) => reply._id);
+    const replyToDelete = replies?.find((reply) => replyId);
     if (!replyToDelete)
       return res.status(404).json({ error: 'Reply not found' });
 
-    if (String(replyToDelete.userId) !== userId)
+    const replyUserId = replyToDelete.user?._id;
+
+    if (String(replyUserId) !== userId)
       return res
         .status(401)
         .json({ error: "You are not allow to delete other user's comment" });
@@ -222,8 +224,13 @@ const getUserPosts = async (req: IGetUserAuthInfoRequest, res: Response) => {
 
 const getUserReplies = async (req: IGetUserAuthInfoRequest, res: Response) => {
   try {
-    const currentUserId = req.user._id;
-    const posts = await Post.find({ 'replies.userId': { $eq: currentUserId } });
+    const { username } = req.params;
+
+    const user = await User.findOne({ username });
+
+    if (!user) return res.status(404).json({ error: 'No users found' });
+
+    const posts = await Post.find({ 'replies.user': { $eq: user._id } });
 
     if (!posts) return res.status(404).json({ error: 'No replies found' });
 

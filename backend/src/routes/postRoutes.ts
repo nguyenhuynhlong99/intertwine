@@ -17,12 +17,12 @@ const router = express.Router();
 router.patch('/like/:id', protectRoute, likeUnlikePost);
 router.patch('/reply/:id', protectRoute, replyToPost);
 router.patch('/:pid/reply/:id/delete', protectRoute, deleteReply);
-router.get('/replies', protectRoute, getUserReplies);
 
 router.get('/feed', protectRoute, getFeedPosts);
 router.post('/', protectRoute, createPost);
 router.get('/:id', getPost);
 router.get('/user/:username', protectRoute, getUserPosts);
+router.get('/user/:username/replies', protectRoute, getUserReplies);
 router.delete('/:id', protectRoute, deletePost);
 
 export default router;

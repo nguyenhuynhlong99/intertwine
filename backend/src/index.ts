@@ -8,17 +8,15 @@ import connectDB from '../src/db/connectDB.js';
 import userRoutes from './routes/userRoutes.js';
 import postRoutes from './routes/postRoutes.js';
 import { v2 as cloudinary } from 'cloudinary';
+import rateLimit from 'express-rate-limit';
+import ExpressMongoSanitize from 'express-mongo-sanitize';
 
 dotenv.config();
 connectDB();
 
 const app = express();
 
-app.use(
-  cors({
-    // credentials: true,
-  })
-);
+app.use(cors());
 
 const PORT = process.env.PORT || 6000;
 
@@ -28,10 +26,25 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+const limiter = rateLimit({
+  limit: 100,
+  windowMs: 60 * 60 * 1000,
+  message: 'Too many requests from this IP, please try again in an hour!',
+});
+
+app.use('/api', limiter);
+
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(compression());
+
+app.use(
+  ExpressMongoSanitize({
+    allowDots: true,
+    replaceWith: '_',
+  })
+);
 
 // Routes
 app.use('/api/users', userRoutes);
