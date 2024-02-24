@@ -3,7 +3,7 @@ import protectRoute from '../middlewares/protectRoute.js';
 import {
   followUnfollowUser,
   getAllUsers,
-  getCurrentUser,
+  getAuthenticatedUser,
   getUserProfile,
   loginUser,
   logoutUser,
@@ -14,7 +14,7 @@ import {
 const router = express.Router();
 
 router.get('/', protectRoute, getAllUsers);
-router.get('/whoami', protectRoute, getCurrentUser);
+router.get('/whoami', protectRoute, getAuthenticatedUser);
 router.post('/signup', signupUser);
 router.post('/login', loginUser);
 router.post('/logout', logoutUser);

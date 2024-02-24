@@ -1,12 +1,13 @@
 import mongoose from 'mongoose';
+import env from '../utils/validateEnv.js';
 
 const connectDB = async () => {
   try {
-    if (!process.env.MONGO_URI) {
+    if (!env.MONGO_URI) {
       throw new Error('mongo url not defined');
     }
-    const conn = await mongoose.connect(process.env.MONGO_URI);
-    console.log(`MongoDB connected: ${conn.connection.host}`);
+    const conn = await mongoose.connect(env.MONGO_URI);
+    console.log(`MongoDB connected!`);
   } catch (error) {
     console.error(error);
     process.exit(1);
