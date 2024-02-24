@@ -1,14 +1,23 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import User from '../models/User.js';
 import getErrorMessage from '../utils/getErrorMessage.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { Types } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import { IGetUserAuthInfoRequest } from 'middlewares/protectRoute.js';
 import { v2 as cloudinary } from 'cloudinary';
+import 'express-session';
+import env from '../utils/validateEnv.js';
+import createHttpError from 'http-errors';
+
+declare module 'express-session' {
+  export interface SessionData {
+    userId: mongoose.Types.ObjectId;
+  }
+}
 
 const createTokenSetCookie = (userId: Types.ObjectId, res: Response) => {
-  const token = jwt.sign({ userId }, String(process.env.JWT_SECRET), {
+  const token = jwt.sign({ userId }, String(env.JWT_SECRET), {
     expiresIn: '3d',
   });
 
@@ -21,63 +30,62 @@ const createTokenSetCookie = (userId: Types.ObjectId, res: Response) => {
   return token;
 };
 
-const signupUser = async (req: Request, res: Response) => {
+const signupUser = async (req: Request, res: Response, next: NextFunction) => {
   const { email, username, password, name } = req.body;
 
   try {
     const user = await User.signUp(email, password, username, name);
 
-    createTokenSetCookie(user._id, res);
+    // createTokenSetCookie(user._id, res);
+    req.session.userId = user._id;
 
     user.password = null;
 
-    res.status(201).json({
-      user,
-    });
+    res.status(201).json(user);
   } catch (error) {
-    res.status(400).json({ error: getErrorMessage(error) });
-    console.error(error);
+    next(error);
   }
 };
 
-const loginUser = async (req: Request, res: Response) => {
+const loginUser = async (req: Request, res: Response, next: NextFunction) => {
   const { username, password } = req.body;
   try {
     const user = await User.login(username, password);
 
-    createTokenSetCookie(user._id, res);
+    // createTokenSetCookie(user._id, res);
+    req.session.userId = user._id;
 
     user.password = null;
 
-    res.status(200).json({
-      user,
-    });
+    res.status(200).json(user);
   } catch (error) {
-    res.status(400).json({ error: getErrorMessage(error) });
-    console.error(error);
+    next(error);
   }
 };
 
-const logoutUser = (req: Request, res: Response) => {
-  try {
-    res.cookie('jwt', '', { maxAge: 1 });
-    res.status(200).json({ message: 'User logged out successfully' });
-  } catch (error) {
-    res.status(500).json({ error: getErrorMessage(error) });
-    console.log(error);
-  }
+const logoutUser = (req: Request, res: Response, next: NextFunction) => {
+  req.session.destroy((error) => {
+    if (error) {
+      next(error);
+    } else {
+      res.sendStatus(200);
+    }
+  });
 };
 
 const followUnfollowUser = async (
-  req: IGetUserAuthInfoRequest,
-  res: Response
+  req: Request,
+  res: Response,
+  next: NextFunction
 ) => {
   try {
     const { id } = req.params;
-    const userToModify = await User.findById(id);
-    const currentUser = await User.findById(req.user._id);
+    const currentUserId = req.session.userId;
 
-    if (id === req.user._id.toString())
+    const userToModify = await User.findById(id);
+    const currentUser = await User.findById(currentUserId);
+
+    if (id === String(currentUserId))
       return res
         .status(400)
         .json({ error: 'You can not follow/unfollow yourself' });
@@ -85,36 +93,35 @@ const followUnfollowUser = async (
     if (!userToModify || !currentUser)
       return res.status(404).json({ error: 'User not found' });
 
-    const isFollowing = await currentUser.following?.includes(id);
+    const isFollowing = currentUser.following?.includes(id);
 
     if (isFollowing) {
       // unfollow user
-      await User.findByIdAndUpdate(req.user._id, {
+      await User.findByIdAndUpdate(currentUserId, {
         $pull: { following: id },
       });
       await User.findByIdAndUpdate(id, {
-        $pull: { followers: req.user._id },
+        $pull: { followers: currentUserId },
       });
       res.status(200).json({ message: 'Unfollowed user successfully' });
     } else {
       // follow user
-      await User.findByIdAndUpdate(req.user._id, {
+      await User.findByIdAndUpdate(currentUserId, {
         $push: { following: id },
       });
       await User.findByIdAndUpdate(id, {
-        $push: { followers: req.user._id },
+        $push: { followers: currentUserId },
       });
       res.status(200).json({ message: 'Followed user successfully' });
     }
   } catch (error) {
-    res.status(500).json({ error: getErrorMessage(error) });
-    console.error('Error in followUnfollowUser: ', getErrorMessage(error));
+    next(error);
   }
 };
 
-const updateUser = async (req: IGetUserAuthInfoRequest, res: Response) => {
+const updateUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = req.user._id;
+    const userId = req.session.userId;
     const { name, email, username, password, bio } = req.body;
     let { profilePic } = req.body;
 
@@ -122,7 +129,7 @@ const updateUser = async (req: IGetUserAuthInfoRequest, res: Response) => {
 
     if (!user) return res.status(404).json({ error: 'User not found' });
 
-    if (req.params.id !== userId.toString())
+    if (req.params.id !== String(userId))
       return res
         .status(400)
         .json({ error: "You can not update other user's profile" });
@@ -151,52 +158,44 @@ const updateUser = async (req: IGetUserAuthInfoRequest, res: Response) => {
 
     user = await User.findById(user._id);
 
-    res.status(200).json({
-      user,
-    });
+    res.status(200).json(user);
   } catch (error) {
-    res.status(500).json({ error: getErrorMessage(error) });
-    console.error('Error in updateUser: ', getErrorMessage(error));
+    next(error);
   }
 };
 
-const getUserProfile = async (req: Request, res: Response) => {
+const getUserProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { username } = req.params;
   try {
     const user = await User.findOne({ username }).select('-updatedAt');
     if (!user) return res.status(404).json({ error: 'User not found' });
 
-    res.status(200).json({
-      user,
-    });
+    res.status(200).json(user);
   } catch (error) {
-    res.status(500).json({ error: getErrorMessage(error) });
-    console.error('Error in updateUser: ', getErrorMessage(error));
+    next(error);
   }
 };
 
-const getCurrentUser = async (req: IGetUserAuthInfoRequest, res: Response) => {
+const getAuthenticatedUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const userId = req.user._id;
-    const user = await User.findById(userId).exec();
-    if (!user) return res.status(404).json({ error: 'User not found' });
-
-    res.status(200).json({
-      user,
-    });
+    const user = await User.findById(req.session.userId);
+    res.status(200).json(user);
   } catch (error) {
-    res.status(500).json({ error: getErrorMessage(error) });
-    console.error('Error in updateUser: ', getErrorMessage(error));
+    next(error);
   }
 };
 
-const getAllUsers = async (req: IGetUserAuthInfoRequest, res: Response) => {
+const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = req.user._id;
-    const user = await User.findById(userId);
-
-    if (!user)
-      return res.status(404).json({ error: 'User not found! Please log in' });
+    const userId = req.session.userId;
 
     // Filtering
     const queryObj = { ...req.query };
@@ -216,7 +215,7 @@ const getAllUsers = async (req: IGetUserAuthInfoRequest, res: Response) => {
 
     let query = User.find({
       ...queryObj,
-      _id: { $ne: user._id },
+      _id: { $ne: userId },
     });
 
     //Sort
@@ -262,8 +261,7 @@ const getAllUsers = async (req: IGetUserAuthInfoRequest, res: Response) => {
       totalPages: Math.ceil(users.length / limit),
     });
   } catch (error) {
-    res.status(500).json({ error: getErrorMessage(error) });
-    console.error('Error in updateUser: ', getErrorMessage(error));
+    next(error);
   }
 };
 
@@ -274,6 +272,6 @@ export {
   followUnfollowUser,
   updateUser,
   getUserProfile,
-  getCurrentUser,
+  getAuthenticatedUser,
   getAllUsers,
 };

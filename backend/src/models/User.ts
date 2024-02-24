@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import validator from 'validator';
+import createHttpError from 'http-errors';
 
 export interface IUser {
   name: string;
@@ -74,13 +75,13 @@ userSchema.static(
   'signUp',
   async function signUp(email, password, username, name) {
     if (!email || !password || !username || !name) {
-      throw Error('Please fill out all the fields');
+      throw createHttpError(400, 'Please fill out all the fields');
     }
 
     if (!validator.isEmail(email)) throw Error('Please provide valid email');
 
     const exists = await User.findOne({ $or: [{ email }, { username }] });
-    if (exists) throw Error('Email or username already existed');
+    if (exists) throw createHttpError(409, 'Email or username already existed');
 
     const hashedPassword = await User.hashPassword(password);
 
@@ -97,15 +98,15 @@ userSchema.static(
 
 userSchema.static('login', async function login(username, password) {
   if (!username || !password)
-    throw Error('Please fill out username and password');
+    throw createHttpError(400, 'Please fill out username and password');
 
   const user = await User.findOne({ username }).select('+password');
 
-  if (!user) throw Error('Incorrect username');
+  if (!user) throw createHttpError(401, 'Incorrect username');
 
   const match = await bcrypt.compare(password, user.password);
 
-  if (!match) throw Error('Incorrect password');
+  if (!match) throw createHttpError(401, 'Incorrect password');
 
   return user;
 });

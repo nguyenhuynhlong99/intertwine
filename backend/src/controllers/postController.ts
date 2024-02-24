@@ -1,11 +1,20 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { IGetUserAuthInfoRequest } from '../middlewares/protectRoute.js';
 import Post from '../models/Post.js';
 import getErrorMessage from '../utils/getErrorMessage.js';
 import User from '../models/User.js';
 import { v2 as cloudinary } from 'cloudinary';
+import 'express-session';
+import mongoose from 'mongoose';
+import createHttpError from 'http-errors';
 
-const getPost = async (req: Request, res: Response) => {
+declare module 'express-session' {
+  export interface SessionData {
+    userId: mongoose.Types.ObjectId;
+  }
+}
+
+const getPost = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const post = await Post.findById(req.params.id);
 
@@ -13,32 +22,32 @@ const getPost = async (req: Request, res: Response) => {
 
     res.status(200).json(post);
   } catch (error) {
-    res.status(500).json({ error: getErrorMessage(error) });
-    console.error(error);
+    next(error);
   }
 };
 
-const createPost = async (req: IGetUserAuthInfoRequest, res: Response) => {
+const createPost = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { postedBy, text } = req.body;
     let { img } = req.body;
 
     if (!postedBy || !text)
-      return res.status(400).json({ error: 'Please fill all the fields' });
+      throw createHttpError(400, 'Please provide all the fields');
 
     const user = await User.findById(postedBy);
 
-    if (!user) return res.status(400).json({ error: 'User not found' });
+    if (!user) throw createHttpError(404, 'User not found');
 
-    if (user._id.toString() !== req.user._id.toString()) {
-      return res.status(401).json({ error: 'Unauthorized to create post' });
+    if (user._id.toString() !== String(req.session.userId)) {
+      throw createHttpError(401, 'Unauthorized to create post');
     }
 
     const maxLength = 500;
     if (text.length > maxLength) {
-      return res
-        .status(400)
-        .json({ error: `Text muse be less than ${maxLength} characters` });
+      throw createHttpError(
+        400,
+        `Text muse be less than ${maxLength} characters`
+      );
     }
 
     if (img) {
@@ -57,24 +66,23 @@ const createPost = async (req: IGetUserAuthInfoRequest, res: Response) => {
         post,
       });
     } else {
-      res.status(400).json({ error: 'Invalid post data' });
+      throw createHttpError(400, 'Invalid post data');
     }
   } catch (error) {
-    res.status(500).json({ error: getErrorMessage(error) });
-    console.error(error);
+    next(error);
   }
 };
 
-const deletePost = async (req: IGetUserAuthInfoRequest, res: Response) => {
+const deletePost = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const post = await Post.findById(req.params.id);
 
-    if (!post) return res.status(404).json({ error: 'Post not found' });
+    if (!post) throw createHttpError(404, 'Post not found');
 
     const userId = String(post.postedBy?._id);
 
-    if (userId !== req.user._id.toString()) {
-      return res.status(401).json({ error: 'Unauthorized to delete post' });
+    if (userId !== String(req.session.userId)) {
+      throw createHttpError(401, 'Unauthorized to delete post');
     }
 
     if (post.img) {
@@ -84,21 +92,29 @@ const deletePost = async (req: IGetUserAuthInfoRequest, res: Response) => {
 
     await Post.findByIdAndDelete(req.params.id);
 
-    res.status(204).json({ message: 'Deleted post successfully' });
+    res.sendStatus(204);
   } catch (error) {
-    res.status(500).json({ error: getErrorMessage(error) });
-    console.error(error);
+    next(error);
   }
 };
 
-const likeUnlikePost = async (req: IGetUserAuthInfoRequest, res: Response) => {
+const likeUnlikePost = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const userId = req.user._id;
+    const userId = req.session.userId;
+
+    const user = await User.findById(userId);
+
+    if (!user) throw createHttpError(404, 'User not found');
+
     const post = await Post.findById(req.params.id);
 
     if (!post) return res.status(404).json({ error: 'Post not found' });
 
-    if (post.likes?.includes(userId)) {
+    if (post.likes?.includes(user._id)) {
       await Post.findByIdAndUpdate(req.params.id, {
         $pull: { likes: userId },
       });
@@ -107,7 +123,7 @@ const likeUnlikePost = async (req: IGetUserAuthInfoRequest, res: Response) => {
         message: 'Unliked post successfully',
       });
     } else {
-      post.likes?.push(userId);
+      post.likes?.push(user._id);
       await post.save();
 
       res.status(200).json({
@@ -115,60 +131,58 @@ const likeUnlikePost = async (req: IGetUserAuthInfoRequest, res: Response) => {
       });
     }
   } catch (error) {
-    res.status(500).json({ error: getErrorMessage(error) });
-    console.error(error);
+    next(error);
   }
 };
 
-const replyToPost = async (req: IGetUserAuthInfoRequest, res: Response) => {
+const replyToPost = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { text } = req.body;
     const postId = req.params.id;
 
-    const userId = req.user._id;
+    const userId = req.session.userId;
 
     const user = await User.findById(userId);
 
-    if (!user) return res.status(404).json({ error: 'User not found' });
+    if (!user) throw createHttpError(404, 'User not found');
 
-    if (!text) return res.status(400).json({ error: 'Text field is required' });
+    if (!text) throw createHttpError(404, 'Text field required');
 
     const post = await Post.findById(postId);
 
-    if (!post) return res.status(404).json({ error: 'Post not found' });
+    if (!post) throw createHttpError(404, 'Post not found');
 
     const reply = { user: userId, text };
 
     post.replies?.push(reply);
     await post.save();
 
-    res.status(200).json({ message: 'Replied to post successfully', post });
+    res.status(200).json({ post });
   } catch (error) {
-    res.status(500).json({ error: getErrorMessage(error) });
-    console.error(error);
+    next(error);
   }
 };
 
-const deleteReply = async (req: IGetUserAuthInfoRequest, res: Response) => {
+const deleteReply = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = String(req.user._id);
+    const userId = String(req.session.userId);
     const postId = req.params.pid;
     const replyId = req.params.id;
 
     const post = await Post.findById(postId);
-    if (!post) return res.status(404).json({ error: 'Post not found' });
+    if (!post) throw createHttpError(404, 'Post not found');
 
     const replies = post?.replies;
     const replyToDelete = replies?.find((reply) => replyId);
-    if (!replyToDelete)
-      return res.status(404).json({ error: 'Reply not found' });
+    if (!replyToDelete) throw createHttpError(404, 'Reply not found');
 
     const replyUserId = replyToDelete.user?._id;
 
     if (String(replyUserId) !== userId)
-      return res
-        .status(401)
-        .json({ error: "You are not allow to delete other user's comment" });
+      throw createHttpError(
+        403,
+        "You are not allow to delete other user's reply"
+      );
 
     const updatedReplies = replies?.filter(
       (reply) => String(reply._id) !== replyId
@@ -179,14 +193,17 @@ const deleteReply = async (req: IGetUserAuthInfoRequest, res: Response) => {
 
     res.status(200).json({ message: 'Delete reply successfully' });
   } catch (error) {
-    res.status(500).json({ error: getErrorMessage(error) });
-    console.error(error);
+    next(error);
   }
 };
 
-const getFeedPosts = async (req: IGetUserAuthInfoRequest, res: Response) => {
+const getFeedPosts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const userId = req.user._id;
+    const userId = req.session.userId;
     const user = await User.findById(userId);
 
     if (!user) return res.status(404).json({ error: 'User not found' });
@@ -199,12 +216,15 @@ const getFeedPosts = async (req: IGetUserAuthInfoRequest, res: Response) => {
 
     res.status(200).json({ status: 'success', feed });
   } catch (error) {
-    res.status(500).json({ error: getErrorMessage(error) });
-    console.error(error);
+    next(error);
   }
 };
 
-const getUserPosts = async (req: IGetUserAuthInfoRequest, res: Response) => {
+const getUserPosts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { username } = req.params;
   try {
     const user = await User.findOne({ username });
@@ -217,12 +237,15 @@ const getUserPosts = async (req: IGetUserAuthInfoRequest, res: Response) => {
 
     res.status(200).json(posts);
   } catch (error) {
-    res.status(500).json({ error: getErrorMessage(error) });
-    console.error(error);
+    next(error);
   }
 };
 
-const getUserReplies = async (req: IGetUserAuthInfoRequest, res: Response) => {
+const getUserReplies = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { username } = req.params;
 
@@ -236,8 +259,7 @@ const getUserReplies = async (req: IGetUserAuthInfoRequest, res: Response) => {
 
     res.status(200).json({ posts });
   } catch (error) {
-    res.status(500).json({ error: getErrorMessage(error) });
-    console.error(error);
+    next(error);
   }
 };
 
