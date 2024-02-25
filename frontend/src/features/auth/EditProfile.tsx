@@ -17,7 +17,6 @@ import useImgPreview from '../../hooks/useImgPreview';
 import useShowToast from '../../hooks/useShowToast';
 // import { updateProfile } from '../../services/apiUser';
 import { useEditProfile } from './useEditProfile';
-// import { getUser } from '../../utils/userLocalStorage';
 // import { useUser } from './useUser';
 
 interface Inputs {

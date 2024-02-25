@@ -9,14 +9,14 @@ export default function UserPage() {
   const { username } = useParams();
 
   const userData = useUser(String(username));
-  const isGettingUserData = userData?.isPending;
+  const isLoading = userData?.isPending;
   const user = userData?.user;
 
   const accentColor = useColorModeValue('accent.light', 'accent.dark');
 
   useDocumentTitle(`${user?.name} (${username})`);
 
-  if (isGettingUserData)
+  if (isLoading)
     return (
       <Flex justifyContent={'center'}>
         <Spinner size={'xl'} color={accentColor} />
@@ -24,7 +24,7 @@ export default function UserPage() {
     );
 
   // Dont forget to add not found page
-  if (!user && !isGettingUserData) return null;
+  if (!isLoading && !user) return null;
 
   return (
     <>

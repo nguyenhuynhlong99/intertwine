@@ -6,7 +6,11 @@ import axios from 'axios';
 export function useUser(username: string) {
   const { showToast } = useShowToast();
 
-  const { isPending, data, error } = useQuery({
+  const {
+    isPending,
+    data: user,
+    error,
+  } = useQuery({
     queryKey: ['user', username],
     queryFn: () => getProfile(String(username)),
     retry: false, //by default React Query will try to fetch the data 3 times in case it fails in the beginning.
@@ -20,7 +24,7 @@ export function useUser(username: string) {
     showToast('Error', 'Failed to get user profile', 'error');
   }
 
-  const user = data?.user || null;
+  // const user = data?.user || null;
 
   return { isPending, user };
 }

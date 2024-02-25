@@ -26,6 +26,7 @@ export function useEditProfile(username: string) {
     onSuccess: (data) => {
       console.log(data);
       saveUser(data?.user);
+      queryClient.invalidateQueries({ queryKey: ['user'] });
       queryClient.invalidateQueries({ queryKey: ['user', username] });
       showToast('Success', 'Edit profile successfully', 'success');
     },

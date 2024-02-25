@@ -8,9 +8,10 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { BROKEN_LINK_IMG, getUser } from '../../utils/userLocalStorage';
+import { BROKEN_LINK_IMG } from '../../utils/userLocalStorage';
 import { formatDistanceToNow } from 'date-fns';
 import DeleteReply from './DeleteReply';
+import { useCurrentUser } from '../auth/useCurrentUser';
 
 interface Props {
   username: string;
@@ -29,7 +30,7 @@ export default function Reply({
   createdAt,
   replyId,
 }: Props) {
-  const currentUser = getUser();
+  const { data: currentUser } = useCurrentUser();
 
   return (
     <>

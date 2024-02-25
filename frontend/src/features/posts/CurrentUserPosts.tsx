@@ -2,11 +2,11 @@ import { useParams } from 'react-router-dom';
 import { useUserPosts } from './useUserPosts';
 import PostList from './PostList';
 import { Flex, Spinner, Text, useColorModeValue } from '@chakra-ui/react';
-import { getUser } from '../../utils/userLocalStorage';
+import { useCurrentUser } from '../auth/useCurrentUser';
 
 export default function CurrentUserPosts() {
   const { username } = useParams();
-  const currentUser = getUser();
+  const { data: currentUser } = useCurrentUser();
 
   const userPostsData = useUserPosts(String(username));
   const userPosts = userPostsData?.userPosts;
@@ -14,8 +14,6 @@ export default function CurrentUserPosts() {
 
   const accentColor = useColorModeValue('accent.light', 'accent.dark');
   const primaryColor = useColorModeValue('primary.light', 'primary.dark');
-
-  console.log(userPosts);
 
   if (isPending)
     return (

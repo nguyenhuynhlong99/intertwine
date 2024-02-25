@@ -25,13 +25,14 @@ import { Images, NotePencil } from '@phosphor-icons/react';
 import useImgPreview from '../../hooks/useImgPreview';
 import { ChangeEvent, useRef, useState } from 'react';
 import useCreatePost from './useCreatePost';
-import { BROKEN_LINK_IMG, getUser } from '../../utils/userLocalStorage';
+import { BROKEN_LINK_IMG } from '../../utils/userLocalStorage';
+import { useCurrentUser } from '../auth/useCurrentUser';
 
 const MAX_CHAR = 500;
 
 export default function CreatePost() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const currentUser = getUser();
+  const { data: currentUser } = useCurrentUser();
   const { handleImgChange, imgPreview, resetImgPreview } = useImgPreview();
   const imgRef = useRef<HTMLInputElement | null>(null);
   const [postContent, setPostContent] = useState<string>('');
