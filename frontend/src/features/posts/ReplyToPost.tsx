@@ -18,9 +18,10 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { ChatCircle } from '@phosphor-icons/react';
-import { BROKEN_LINK_IMG, getUser } from '../../utils/userLocalStorage';
+import { BROKEN_LINK_IMG } from '../../utils/userLocalStorage';
 import useReplyToPost from './useReplyToPost';
 import { useState } from 'react';
+import { useCurrentUser } from '../auth/useCurrentUser';
 
 interface Props {
   postId: string;
@@ -28,12 +29,10 @@ interface Props {
 }
 
 export default function ReplyToPost({ postId, postedByUsername }: Props) {
-  const currentUser = getUser();
+  const { data: currentUser } = useCurrentUser();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { replyToPost, isPending } = useReplyToPost(postId);
   const [content, setContent] = useState<string>('');
-
-  console.log(postId);
 
   function handleReplyToPost() {
     replyToPost(

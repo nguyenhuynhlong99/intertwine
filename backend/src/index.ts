@@ -7,7 +7,6 @@ import connectDB from '../src/db/connectDB.js';
 import userRoutes from './routes/userRoutes.js';
 import postRoutes from './routes/postRoutes.js';
 import { v2 as cloudinary } from 'cloudinary';
-import rateLimit from 'express-rate-limit';
 import ExpressMongoSanitize from 'express-mongo-sanitize';
 import createHttpError, { isHttpError } from 'http-errors';
 import session from 'express-session';
@@ -27,14 +26,6 @@ cloudinary.config({
   api_key: env.CLOUDINARY_API_KEY,
   api_secret: env.CLOUDINARY_API_SECRET,
 });
-
-const limiter = rateLimit({
-  limit: 100,
-  windowMs: 60 * 60 * 1000,
-  message: 'Too many requests from this IP, please try again in an hour!',
-});
-
-app.use('/api', limiter);
 
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true }));

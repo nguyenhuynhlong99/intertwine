@@ -12,11 +12,12 @@ import {
 } from '@chakra-ui/react';
 import PostActions from './PostActions';
 import { FormEvent, useMemo, useState } from 'react';
-import { BROKEN_LINK_IMG, getUser } from '../../utils/userLocalStorage';
+import { BROKEN_LINK_IMG } from '../../utils/userLocalStorage';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import DeletePost from './DeletePost';
 import { Reply } from './UserReplies';
+import { useCurrentUser } from '../auth/useCurrentUser';
 
 interface Props {
   postId: string;
@@ -43,7 +44,8 @@ export default function PostCard({
   createdAt,
   userId,
 }: Props) {
-  const currentUserId = getUser()?._id;
+  const { data } = useCurrentUser();
+  const currentUserId = data?._id;
   const [liked, setLiked] = useState<boolean>(likes.includes(currentUserId));
   const navigate = useNavigate();
 

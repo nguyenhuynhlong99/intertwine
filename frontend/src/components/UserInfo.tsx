@@ -3,11 +3,12 @@ import EditProfile from '../features/auth/EditProfile';
 import Follow from '../features/user/Follow';
 import { useUser } from '../features/auth/useUser';
 import { useParams } from 'react-router-dom';
-import { BROKEN_LINK_IMG, getUser } from '../utils/userLocalStorage';
+import { BROKEN_LINK_IMG } from '../utils/userLocalStorage';
+import { useCurrentUser } from '../features/auth/useCurrentUser';
 
 export default function UserInfo() {
   const { username } = useParams();
-  const currentUser = getUser();
+  const { data: currentUser } = useCurrentUser();
   const userData = useUser(String(username));
   const user = userData?.user;
 

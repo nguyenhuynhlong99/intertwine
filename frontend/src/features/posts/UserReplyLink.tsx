@@ -19,7 +19,6 @@ interface Props {
 
 export default function UserReplyLink({ reply, postId }: Props) {
   const { postedBy, replies } = reply;
-  console.log(replies);
 
   const grayColor = useColorModeValue('gray.light', 'gray.dark');
   const secondaryColor = useColorModeValue('secondary.light', 'secondary.dark');
@@ -79,6 +78,7 @@ export default function UserReplyLink({ reply, postId }: Props) {
 
       {replies?.map((reply, index) => (
         <Grid
+          key={`user-reply-${reply._id}`}
           templateAreas={`"avatar header"
                         "line body"
                         "line body"`}

@@ -5,12 +5,12 @@ import {
   useLocation,
   useNavigate,
 } from 'react-router-dom';
-import { getUser } from '../utils/userLocalStorage';
 import CreatePost from '../features/posts/CreatePost';
 import { House } from '@phosphor-icons/react';
+import { useCurrentUser } from '../features/auth/useCurrentUser';
 
 export default function AppNav() {
-  const currentUsername = getUser()?.username;
+  const { data: currentUser } = useCurrentUser();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -61,7 +61,10 @@ export default function AppNav() {
 
         <CreatePost />
 
-        <ReactRouterNavLink to={`/${currentUsername}`} className="navLink">
+        <ReactRouterNavLink
+          to={`/${currentUser?.username}`}
+          className="navLink"
+        >
           {({ isActive }) => <User weight={isActive ? 'fill' : 'regular'} />}
         </ReactRouterNavLink>
       </Grid>

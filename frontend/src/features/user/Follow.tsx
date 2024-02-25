@@ -2,8 +2,8 @@ import { useParams } from 'react-router-dom';
 import { useFollow } from './useFollow';
 import useShowToast from '../../hooks/useShowToast';
 import { Button, useColorModeValue } from '@chakra-ui/react';
-import { getUser } from '../../utils/userLocalStorage';
 import { FormEvent } from 'react';
+import { useCurrentUser } from '../auth/useCurrentUser';
 
 interface Props {
   width?: string;
@@ -15,7 +15,7 @@ interface Props {
 
 export default function Follow({ width, user }: Props) {
   const { username } = useParams();
-  const currentUser = getUser();
+  const { data: currentUser } = useCurrentUser();
   const { followUnfollowUser, isUpdating } = useFollow(String(username));
 
   const following = user?.followers?.includes(String(currentUser?._id));
