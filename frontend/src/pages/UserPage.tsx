@@ -1,5 +1,5 @@
 import { Flex, Spinner, useColorModeValue } from '@chakra-ui/react';
-import { useParams } from 'react-router-dom';
+import { useParams, Navigate } from 'react-router-dom';
 import { useUser } from '../features/auth/useUser';
 import UserInfo from '../components/UserInfo';
 import useDocumentTitle from '../hooks/useDocumentTitle';
@@ -24,7 +24,9 @@ export default function UserPage() {
     );
 
   // Dont forget to add not found page
-  if (!isLoading && !user) return null;
+  if (!isLoading && !user) {
+    return <Navigate to="/404" replace={true} />;
+  }
 
   return (
     <>

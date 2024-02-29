@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import AppLayout from './components/AppLayout';
 import {
   ChakraProvider,
@@ -13,6 +13,7 @@ import AuthPage from './pages/AuthPage';
 import HomePage from './pages/HomePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import SearchPage from './pages/SearchPage';
+import NotFoundPage from './pages/NotFoundPage';
 
 const styles = {
   global: (props: GlobalStyleProps) => ({
@@ -158,6 +159,8 @@ function App() {
             <Route path="search" element={<SearchPage />} />
           </Route>
           <Route path="/auth" element={<AuthPage />} />
+          <Route path="/404" element={<NotFoundPage />} />
+          <Route path="*" element={<Navigate to="/404" replace />} />
         </Routes>
       </BrowserRouter>
     </ChakraProvider>
