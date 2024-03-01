@@ -11,7 +11,6 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalHeader,
   ModalOverlay,
   Text,
   useColorModeValue,
@@ -52,7 +51,7 @@ export default function ReplyToPost({ postId, postedByUsername }: Props) {
         <ChatCircle />
       </button>
 
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered preserveScrollBarGap>
         <ModalOverlay />
         <ModalContent
           backgroundColor={useColorModeValue('support.light', 'support.dark')}
@@ -61,7 +60,6 @@ export default function ReplyToPost({ postId, postedByUsername }: Props) {
           w={'full'}
           maxW="550px"
         >
-          <ModalHeader></ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6} as={'form'} onSubmit={handleReplyToPost}>
             <Grid gridTemplateColumns={'auto 1fr'} gap={3}>
