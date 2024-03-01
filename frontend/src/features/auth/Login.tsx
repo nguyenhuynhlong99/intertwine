@@ -19,9 +19,6 @@ import { useSetRecoilState } from 'recoil';
 import authScreenAtom from '../../atoms/authAtom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import InputErrorMessage from '../../components/InputErrorMessage';
-
-// import { login } from '../../services/apiAuth';
-// import userAtom from '../../atoms/userAtom';
 import useLogin from './useLogin';
 
 interface Inputs {
@@ -32,15 +29,21 @@ interface Inputs {
 export default function Login() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const setAuthScreen = useSetRecoilState(authScreenAtom);
-  // const setUser = useSetRecoilState(userAtom);
   const { login, isPending } = useLogin();
+
+  const demoAccount = {
+    username: 'jaydoe',
+    password: 'password123',
+  };
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<Inputs>();
+  } = useForm<Inputs>({
+    defaultValues: demoAccount,
+  });
 
   const accentColor = useColorModeValue('accent.light', 'accent.dark');
   const secondaryColor = useColorModeValue('secondary.light', 'secondary.dark');

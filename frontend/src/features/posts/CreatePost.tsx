@@ -94,7 +94,12 @@ export default function CreatePost() {
         <NotePencil />
       </Button>
 
-      <Modal onClose={handleCloseModal} isOpen={isOpen} isCentered>
+      <Modal
+        onClose={handleCloseModal}
+        isOpen={isOpen}
+        isCentered
+        preserveScrollBarGap
+      >
         <ModalOverlay />
         <ModalContent
           backgroundColor={useColorModeValue('support.light', 'support.dark')}

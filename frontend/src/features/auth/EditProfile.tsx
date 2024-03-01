@@ -101,7 +101,12 @@ export default function EditProfile({ user }: Props) {
         Edit profile
       </Button>
 
-      <Modal onClose={closeModal} isOpen={isOpen} isCentered>
+      <Modal
+        onClose={closeModal}
+        isOpen={isOpen}
+        isCentered
+        preserveScrollBarGap
+      >
         <ModalOverlay />
         <ModalContent
           backgroundColor={useColorModeValue('support.light', 'support.dark')}
