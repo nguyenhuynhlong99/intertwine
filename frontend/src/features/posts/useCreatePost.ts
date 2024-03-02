@@ -14,7 +14,6 @@ function useCreatePost() {
       queryClient.invalidateQueries({ queryKey: ['posts'] });
     },
     onError: (err: Error | AxiosError) => {
-      console.log(err);
       if (axios.isAxiosError(err)) {
         showToast('Error', err?.response?.data?.error, 'error');
         return;

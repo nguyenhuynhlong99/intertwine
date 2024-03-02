@@ -24,7 +24,6 @@ function useReplyToPost(id: string) {
       queryClient.invalidateQueries({ queryKey: ['post', id] });
     },
     onError: (err: Error | AxiosError) => {
-      console.log(err);
       if (axios.isAxiosError(err)) {
         showToast('Error', err?.response?.data?.error, 'error');
         return;

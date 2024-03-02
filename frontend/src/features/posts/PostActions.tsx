@@ -21,11 +21,7 @@ export default function PostActions({
 
   function handleLikePost() {
     setLiked((liked) => !liked);
-    likePost(postId, {
-      onSuccess: (data) => {
-        console.log(data);
-      },
-    });
+    likePost(postId);
   }
 
   return (

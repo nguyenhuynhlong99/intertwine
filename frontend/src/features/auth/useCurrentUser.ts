@@ -14,7 +14,5 @@ export function useCurrentUser() {
     console.log(error);
   }
 
-  console.log(data);
-
   return { isPending, data };
 }

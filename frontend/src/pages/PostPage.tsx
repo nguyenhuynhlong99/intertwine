@@ -26,8 +26,6 @@ export default function PostPage() {
     return null;
   }
 
-  console.log(post);
-
   return (
     <>
       <PostCard

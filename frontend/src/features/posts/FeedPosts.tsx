@@ -23,8 +23,6 @@ export default function FeedPosts() {
     );
   }
 
-  console.log(feedData?.feed);
-
   return (
     <>
       <PostList posts={feedData?.feed} />
