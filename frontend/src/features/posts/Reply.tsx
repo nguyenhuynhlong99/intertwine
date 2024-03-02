@@ -12,6 +12,7 @@ import { BROKEN_LINK_IMG } from '../../utils/userLocalStorage';
 import { formatDistanceToNow } from 'date-fns';
 import DeleteReply from './DeleteReply';
 import { useCurrentUser } from '../auth/useCurrentUser';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   username: string;
@@ -31,6 +32,11 @@ export default function Reply({
   replyId,
 }: Props) {
   const { data: currentUser } = useCurrentUser();
+  const navigate = useNavigate();
+
+  function navigateToUserPage(username: string) {
+    navigate(`/${username}`);
+  }
 
   return (
     <>
@@ -43,7 +49,11 @@ export default function Reply({
         gap={2}
         pt={2}
       >
-        <GridItem area={'avatar'}>
+        <GridItem
+          area={'avatar'}
+          cursor={'pointer'}
+          onClick={() => navigateToUserPage(username)}
+        >
           <Avatar size={'sm'} src={avatar || BROKEN_LINK_IMG} />
         </GridItem>
 
@@ -53,7 +63,13 @@ export default function Reply({
           alignItems={'center'}
           justifyContent={'space-between'}
         >
-          <Text fontWeight={600}>{username}</Text>
+          <Text
+            fontWeight={600}
+            cursor={'pointer'}
+            onClick={() => navigateToUserPage(username)}
+          >
+            {username}
+          </Text>
 
           <Flex alignItems={'center'} gap={1}>
             <Text color={useColorModeValue('gray.light', 'gray.dark')}>

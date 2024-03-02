@@ -12,12 +12,15 @@ import createHttpError, { isHttpError } from 'http-errors';
 import session from 'express-session';
 import env from './utils/validateEnv.js';
 import MongoStore from 'connect-mongo';
+import { job } from './cron.js';
 
 connectDB();
 
 const app = express();
 
 app.use(cors());
+
+job.start();
 
 const PORT = env.PORT || 6000;
 
