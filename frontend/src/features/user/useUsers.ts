@@ -28,7 +28,6 @@ export function useUsers(query: UserQuery) {
     retry: false, //by default React Query will try to fetch the data 3 times in case it fails in the beginning.
   });
   if (error) {
-    console.log(error);
     if (axios.isAxiosError(error)) {
       showToast('Error', error?.response?.data?.error, 'error');
       return;

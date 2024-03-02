@@ -21,7 +21,6 @@ function useDeletePost(id: string) {
       if (isAtPostPage) navigate(-1);
     },
     onError: (err: Error | AxiosError) => {
-      console.log(err);
       if (axios.isAxiosError(err)) {
         showToast('Error', err?.response?.data?.error, 'error');
         return;
