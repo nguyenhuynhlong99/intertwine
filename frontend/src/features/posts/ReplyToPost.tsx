@@ -59,6 +59,7 @@ export default function ReplyToPost({ postId, postedByUsername }: Props) {
           boxShadow={'lg'}
           w={'full'}
           maxW="550px"
+          pt={4}
         >
           <ModalCloseButton />
           <ModalBody pb={6} as={'form'} onSubmit={handleReplyToPost}>

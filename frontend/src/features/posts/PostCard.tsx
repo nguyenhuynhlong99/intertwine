@@ -93,6 +93,7 @@ export default function PostCard({
           display={'flex'}
           alignItems={'center'}
           justifyContent={'center'}
+          cursor={'pointer'}
         >
           <Avatar size={'sm'} src={userImg || BROKEN_LINK_IMG} />
         </GridItem>
@@ -103,7 +104,11 @@ export default function PostCard({
           alignItems={'center'}
           justifyContent={'space-between'}
         >
-          <Text fontWeight={600} onClick={navigateToUserPage}>
+          <Text
+            fontWeight={600}
+            onClick={navigateToUserPage}
+            cursor={'pointer'}
+          >
             {username}
           </Text>
 
