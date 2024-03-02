@@ -16,7 +16,7 @@ import { BROKEN_LINK_IMG } from '../../utils/userLocalStorage';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import DeletePost from './DeletePost';
-import { Reply } from './UserReplies';
+import type { Reply } from './UserReplies';
 import { useCurrentUser } from '../auth/useCurrentUser';
 
 interface Props {
