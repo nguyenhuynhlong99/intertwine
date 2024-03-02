@@ -1,5 +1,6 @@
 import { Box } from '@chakra-ui/react';
-import PostCard, { Reply } from './PostCard';
+import PostCard from './PostCard';
+import type { Reply } from './UserReplies';
 import { Link } from 'react-router-dom';
 
 interface Post {
