@@ -11,6 +11,9 @@ export default defineConfig({
         // target: 'http://localhost:6000',
         changeOrigin: true,
         secure: true,
+        headers: {
+          origin: 'https://intertwine-server.onrender.com',
+        },
       },
     },
   },
