@@ -45,15 +45,14 @@ app.use(
 app.use(
   session({
     secret: env.SESSION_SECRET,
-    resave: true,
+    resave: false,
     saveUninitialized: false,
     cookie: {
       path: '/',
       domain: 'https://intertwine.onrender.com',
       maxAge: 24 * 60 * 60 * 1000,
-      sameSite: 'none',
-      secure: true,
       httpOnly: true,
+      secure: true,
     },
     rolling: true,
     store: MongoStore.create({
@@ -63,7 +62,10 @@ app.use(
 );
 
 app.use(function (req, res, next) {
-  res.header('Access-Control-Allow-Credentials', req.headers.origin);
+  res.header(
+    'Access-Control-Allow-Credentials',
+    'https://intertwine.onrender.com'
+  );
   res.header('Access-Control-Allow-Origin', req.headers.origin);
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
   res.header(
