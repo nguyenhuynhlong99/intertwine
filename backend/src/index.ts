@@ -22,7 +22,7 @@ app.set('trust proxy', 1);
 
 app.use(
   cors({
-    origin: ['https://intertwine.onrender.com'],
+    origin: 'https://intertwine.onrender.com',
     credentials: true,
   })
 );
@@ -70,8 +70,8 @@ app.use(
 );
 
 app.use(function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', req.headers.origin);
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Origin', 'https://intertwine.onrender.com');
+  res.header('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE');
   res.header(
     'Access-Control-Allow-Headers',
     'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept'
