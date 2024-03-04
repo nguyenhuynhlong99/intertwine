@@ -52,7 +52,6 @@ app.use(
       sameSite: 'none',
       secure: true,
       httpOnly: true,
-      domain: 'https://intertwine.onrender.com',
     },
     rolling: true,
     store: MongoStore.create({

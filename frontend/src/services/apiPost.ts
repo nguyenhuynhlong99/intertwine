@@ -11,46 +11,57 @@ export interface ReplyBody {
 }
 
 export const getPost = async (id: string) => {
-  const res = await axios.get(`/api/posts/${id}`);
+  const res = await axios.get(`/api/posts/${id}`, { withCredentials: true });
   return res.data;
 };
 
 export const getUserPosts = async (username: string) => {
-  const res = await axios.get(`/api/posts/user/${username}`);
+  const res = await axios.get(`/api/posts/user/${username}`, {
+    withCredentials: true,
+  });
   return res.data;
 };
 
 export const createPost = async (post: PostBody) => {
-  const res = await axios.post('/api/posts', post);
+  const res = await axios.post('/api/posts', post, { withCredentials: true });
   return res.data;
 };
 
 export const deletePost = async (id: string) => {
-  const res = await axios.delete(`/api/posts/${id}`);
+  const res = await axios.delete(`/api/posts/${id}`, { withCredentials: true });
   return res.data;
 };
 
 export const getFeedPosts = async () => {
-  const res = await axios.get(`/api/posts/feed`);
+  const res = await axios.get(`/api/posts/feed`, { withCredentials: true });
   return res.data;
 };
 
 export const likeUnlikePost = async (id: string) => {
-  const res = await axios.patch(`/api/posts/like/${id}`);
+  const res = await axios.patch(`/api/posts/like/${id}`, {
+    withCredentials: true,
+  });
   return res.data;
 };
 
 export const replyToPost = async (id: string, reply: ReplyBody) => {
-  const res = await axios.patch(`/api/posts/reply/${id}`, reply);
+  const res = await axios.patch(`/api/posts/reply/${id}`, reply, {
+    withCredentials: true,
+  });
   return res.data;
 };
 
 export const deleteReply = async (postId: string, replyId: string) => {
-  const res = await axios.patch(`/api/posts/${postId}/reply/${replyId}/delete`);
+  const res = await axios.patch(
+    `/api/posts/${postId}/reply/${replyId}/delete`,
+    { withCredentials: true }
+  );
   return res.data;
 };
 
 export const getUserReplies = async (username: string) => {
-  const res = await axios.get(`/api/posts/user/${username}/replies`);
+  const res = await axios.get(`/api/posts/user/${username}/replies`, {
+    withCredentials: true,
+  });
   return res.data;
 };

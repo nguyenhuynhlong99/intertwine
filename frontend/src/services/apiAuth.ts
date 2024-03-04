@@ -14,12 +14,16 @@ interface LoginBody {
 
 export const signup = async (user: SignUpBody) => {
   // Don't need try catch because of React Query
-  const res = await axios.post('/api/users/signup', user);
+  const res = await axios.post('/api/users/signup', user, {
+    withCredentials: true,
+  });
   return res.data;
 };
 
 export const login = async (user: LoginBody) => {
-  const res = await axios.post('/api/users/login', user);
+  const res = await axios.post('/api/users/login', user, {
+    withCredentials: true,
+  });
   return res.data;
 };
 
@@ -29,6 +33,6 @@ export const logout = async () => {
 };
 
 export const getCurrentUser = async () => {
-  const res = await axios.get('/api/users/whoami');
+  const res = await axios.get('/api/users/whoami', { withCredentials: true });
   return res.data;
 };
