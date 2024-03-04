@@ -12,23 +12,28 @@ interface LoginBody {
   password: string;
 }
 
+const usersApi = axios.create({
+  baseURL: 'https://intertwine-server.onrender.com/api/users',
+  withCredentials: true,
+});
+
 export const signup = async (user: SignUpBody) => {
   // Don't need try catch because of React Query
-  const res = await axios.post('/api/users/signup', user);
+  const res = await usersApi.post('/signup', user);
   return res.data;
 };
 
 export const login = async (user: LoginBody) => {
-  const res = await axios.post('/api/users/login', user);
+  const res = await usersApi.post('/login', user);
   return res.data;
 };
 
 export const logout = async () => {
-  const res = await axios.post('/api/users/logout');
+  const res = await usersApi.post('/logout');
   return res.data;
 };
 
 export const getCurrentUser = async () => {
-  const res = await axios.get('/api/users/whoami', { withCredentials: true });
+  const res = await usersApi.get('/whoami', { withCredentials: true });
   return res.data;
 };

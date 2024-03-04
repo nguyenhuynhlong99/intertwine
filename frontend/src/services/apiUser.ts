@@ -15,30 +15,29 @@ export interface UserQuery {
   username?: string;
 }
 
+const usersApi = axios.create({
+  baseURL: 'https://intertwine-server.onrender.com/api/users',
+  withCredentials: true,
+});
+
 export const getAllUsers = async (query: UserQuery) => {
   const params = { ...query };
 
-  const res = await axios.get(`/api/users`, { params, withCredentials: true });
+  const res = await usersApi.get(`/`, { params });
   return res.data;
 };
 
 export const getProfile = async (username: string) => {
-  const res = await axios.get(`/api/users/${username}`, {
-    withCredentials: true,
-  });
+  const res = await usersApi.get(`/${username}`);
   return res.data;
 };
 
 export const updateProfile = async (id: string, user: UpdateProfileBody) => {
-  const res = await axios.patch(`/api/users/update/${id}`, user, {
-    withCredentials: true,
-  });
+  const res = await usersApi.patch(`/update/${id}`, user);
   return res.data;
 };
 
 export const followUnfollow = async (id: string) => {
-  const res = await axios.patch(`/api/users/follow/${id}`, {
-    withCredentials: true,
-  });
+  const res = await usersApi.patch(`/follow/${id}`);
   return res.data;
 };
