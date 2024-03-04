@@ -54,7 +54,7 @@ app.use(
   session({
     secret: env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
     proxy: true,
     name: 'intertwine-user-session',
     cookie: {

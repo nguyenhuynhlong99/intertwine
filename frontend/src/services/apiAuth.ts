@@ -34,6 +34,6 @@ export const logout = async () => {
 };
 
 export const getCurrentUser = async () => {
-  const res = await usersApi.get('/whoami', { withCredentials: true });
+  const res = await usersApi.get('/whoami');
   return res.data;
 };
