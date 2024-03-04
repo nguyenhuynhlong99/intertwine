@@ -58,7 +58,6 @@ app.use(
     proxy: true,
     cookie: {
       path: '/',
-      domain: 'https://intertwine.onrender.com',
       maxAge: 24 * 60 * 60 * 1000,
       httpOnly: true,
       secure: true,
