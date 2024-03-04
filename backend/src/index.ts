@@ -24,6 +24,7 @@ app.use(
   cors({
     origin: 'https://intertwine.onrender.com',
     credentials: true,
+    exposedHeaders: ['set-cookie'],
   })
 );
 
