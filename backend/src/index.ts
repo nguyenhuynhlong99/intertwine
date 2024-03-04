@@ -54,11 +54,11 @@ app.use(
   session({
     secret: env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
     proxy: true,
     name: 'intertwine-user-session',
     cookie: {
-      // path: '/',
+      path: '/',
       maxAge: 24 * 60 * 60 * 1000,
       httpOnly: true,
       secure: true,
