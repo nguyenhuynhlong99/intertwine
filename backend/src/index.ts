@@ -24,7 +24,6 @@ app.use(
   cors({
     origin: ['https://intertwine.onrender.com'],
     credentials: true,
-    optionsSuccessStatus: 200,
   })
 );
 
@@ -61,6 +60,7 @@ app.use(
       maxAge: 24 * 60 * 60 * 1000,
       httpOnly: true,
       secure: true,
+      sameSite: 'none',
     },
     rolling: true,
     store: MongoStore.create({
