@@ -55,6 +55,7 @@ app.use(
     secret: env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    proxy: true,
     cookie: {
       path: '/',
       domain: 'https://intertwine.onrender.com',
