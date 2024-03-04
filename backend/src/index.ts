@@ -45,9 +45,11 @@ app.use(
 app.use(
   session({
     secret: env.SESSION_SECRET,
-    resave: false,
+    resave: true,
     saveUninitialized: false,
     cookie: {
+      path: '/',
+      domain: 'https://intertwine.onrender.com',
       maxAge: 24 * 60 * 60 * 1000,
       sameSite: 'none',
       secure: true,
@@ -59,6 +61,17 @@ app.use(
     }),
   })
 );
+
+app.use(function (req, res, next) {
+  res.header('Access-Control-Allow-Credentials', req.headers.origin);
+  res.header('Access-Control-Allow-Origin', req.headers.origin);
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept'
+  );
+  next();
+});
 
 // Routes
 app.use('/api/users', userRoutes);
