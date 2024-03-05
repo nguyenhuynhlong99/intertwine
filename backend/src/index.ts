@@ -18,14 +18,15 @@ connectDB();
 
 const app = express();
 
-app.set('trust proxy', 1);
+// app.set('trust proxy', 1);
 
 app.use(
-  cors({
-    origin: 'https://intertwine.onrender.com',
-    credentials: true,
-    exposedHeaders: ['set-cookie'],
-  })
+  // cors({
+  //   origin: 'https://intertwine.onrender.com',
+  //   credentials: true,
+  //   exposedHeaders: ['set-cookie'],
+  // })
+  cors()
 );
 
 job.start();
@@ -50,36 +51,36 @@ app.use(
   })
 );
 
-app.use(
-  session({
-    secret: env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    proxy: true,
-    name: 'intertwine-user-session',
-    cookie: {
-      path: '/',
-      maxAge: 24 * 60 * 60 * 1000,
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-    },
-    rolling: true,
-    store: MongoStore.create({
-      mongoUrl: env.MONGO_URI,
-    }),
-  })
-);
+// app.use(
+//   session({
+//     secret: env.SESSION_SECRET,
+//     resave: false,
+//     saveUninitialized: true,
+//     proxy: true,
+//     name: 'intertwine-user-session',
+//     cookie: {
+//       path: '/',
+//       maxAge: 24 * 60 * 60 * 1000,
+//       httpOnly: true,
+//       secure: true,
+//       sameSite: 'none',
+//     },
+//     rolling: true,
+//     store: MongoStore.create({
+//       mongoUrl: env.MONGO_URI,
+//     }),
+//   })
+// );
 
-app.use(function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', 'https://intertwine.onrender.com');
-  res.header('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE');
-  res.header(
-    'Access-Control-Allow-Headers',
-    'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept'
-  );
-  next();
-});
+// app.use(function (req, res, next) {
+//   res.header('Access-Control-Allow-Origin', 'https://intertwine.onrender.com');
+//   res.header('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE');
+//   res.header(
+//     'Access-Control-Allow-Headers',
+//     'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept'
+//   );
+//   next();
+// });
 
 // Routes
 app.use('/api/users', userRoutes);

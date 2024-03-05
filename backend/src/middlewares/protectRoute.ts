@@ -14,34 +14,29 @@ interface JwtPayload {
 }
 
 const protectRoute = async (
-  req: Request,
+  req: IGetUserAuthInfoRequest,
   res: Response,
   next: NextFunction
 ) => {
-  // try {
-  //   const token = req.cookies.jwt;
+  try {
+    if (!req.headers.authorization) throw createHttpError(403, 'Unauthorized');
 
-  //   if (!token)
-  //     return res.status(401).json({
-  //       message: 'Unauthorized',
-  //     });
-
-  //   const decoded = jwt.verify(token, String(env.JWT_SECRET)) as JwtPayload;
-
-  //   const user = await User.findById(decoded.userId);
-
-  //   req.user = user;
-
-  //   next();
-  // } catch (err) {
-  //   res.status(500).json({ message: getErrorMessage(err) });
-  //   console.error(getErrorMessage(err));
-  // }
-  if (req.session.userId) {
+    if (req.headers.authorization.startsWith('Bearer ')) {
+      const token = req.headers.authorization.split(' ')[1];
+      const decoded = jwt.verify(token, env.JWT_SECRET) as JwtPayload;
+      const user = await User.findById(decoded.userId);
+      req.user = user;
+    }
     next();
-  } else {
-    next(createHttpError(401, 'User not authenticated'));
+  } catch (error) {
+    next(error);
   }
+
+  // if (req.session.userId) {
+  //   next();
+  // } else {
+  //   next(createHttpError(401, 'User not authenticated'));
+  // }
 };
 
 export default protectRoute;
