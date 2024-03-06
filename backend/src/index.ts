@@ -20,14 +20,7 @@ const app = express();
 
 // app.set('trust proxy', 1);
 
-app.use(
-  // cors({
-  //   origin: 'https://intertwine.onrender.com',
-  //   credentials: true,
-  //   exposedHeaders: ['set-cookie'],
-  // })
-  cors()
-);
+app.use(cors());
 
 job.start();
 

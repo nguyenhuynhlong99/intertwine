@@ -42,6 +42,8 @@ export default function CurrentUserAllPosts() {
         height="2px"
         bg={useColorModeValue('accent.light', 'accent.dark')}
         borderRadius="1px"
+        minW={'50%'}
+        maxW={'50%'}
       />
       <TabPanels>
         <TabPanel>

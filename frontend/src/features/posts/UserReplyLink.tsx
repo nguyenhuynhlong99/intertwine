@@ -10,18 +10,23 @@ import {
 import { BROKEN_LINK_IMG } from '../../utils/userLocalStorage';
 import { IUserReply } from './UserReplies';
 import { formatDistanceToNow } from 'date-fns';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 interface Props {
-  reply: IUserReply;
+  post: IUserReply;
   postId: string;
 }
 
-export default function UserReplyLink({ reply, postId }: Props) {
-  const { postedBy, replies } = reply;
+export default function UserReplyLink({ post, postId }: Props) {
+  const { username } = useParams();
+  const { postedBy, replies } = post;
 
   const grayColor = useColorModeValue('gray.light', 'gray.dark');
   const secondaryColor = useColorModeValue('secondary.light', 'secondary.dark');
+
+  const filteredReplies = replies.filter((rep) => {
+    return rep.user.username === username;
+  });
 
   return (
     <Link to={`/${postedBy.username}/post/${postId}`}>
@@ -59,7 +64,7 @@ export default function UserReplyLink({ reply, postId }: Props) {
           flexDirection={'column'}
           gap={2}
         >
-          <Text>{reply.text}</Text>
+          <Text>{post.text}</Text>
         </GridItem>
 
         <GridItem
@@ -76,7 +81,7 @@ export default function UserReplyLink({ reply, postId }: Props) {
         </GridItem>
       </Grid>
 
-      {replies?.map((reply, index) => (
+      {filteredReplies?.map((reply, index) => (
         <Grid
           key={`user-reply-${reply._id}`}
           templateAreas={`"avatar header"
@@ -86,7 +91,6 @@ export default function UserReplyLink({ reply, postId }: Props) {
           gridTemplateRows={'auto 1fr auto'}
           gap={2}
           pt={2}
-          mb={6}
         >
           <GridItem area={'avatar'}>
             <Avatar
@@ -128,7 +132,9 @@ export default function UserReplyLink({ reply, postId }: Props) {
             display={'flex'}
             alignItems={'center'}
             justifyContent={'center'}
-            visibility={index === replies?.length - 1 ? 'hidden' : 'visible'}
+            visibility={
+              index === filteredReplies?.length - 1 ? 'hidden' : 'visible'
+            }
           >
             <Box h={'full'} w="1px" bgColor={secondaryColor}></Box>
           </GridItem>

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { logout as logoutApi } from '../../services/apiAuth';
 import { useNavigate } from 'react-router-dom';
-import { removeUser } from '../../utils/userLocalStorage';
+// import { removeToken } from '../../utils/userLocalStorage';
 import useShowToast from '../../hooks/useShowToast';
 import axios, { AxiosError } from 'axios';
 
@@ -14,7 +14,7 @@ export function useLogout() {
     mutationFn: logoutApi,
     onSuccess: () => {
       queryClient.removeQueries(); //remove all react query caches
-      removeUser();
+      // removeToken();
       navigate('/auth', { replace: true });
     },
     onError: (err: Error | AxiosError) => {

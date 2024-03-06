@@ -1,11 +1,10 @@
 import cron from 'cron';
 import https from 'https';
-
-const URL = 'https://intertwine-server.onrender.com/api/users/jaydoe';
+import env from './utils/validateEnv.js';
 
 export const job = new cron.CronJob('*/14 * * * *', function () {
   https
-    .get(URL, (res) => {
+    .get(env.CRON_JOB_URL, (res) => {
       if (res.statusCode === 200) {
         console.log('GET request sent successfully');
       } else {

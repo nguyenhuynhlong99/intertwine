@@ -14,7 +14,11 @@ declare module 'express-session' {
   }
 }
 
-const getPost = async (req: Request, res: Response, next: NextFunction) => {
+const getPost = async (
+  req: IGetUserAuthInfoRequest,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const post = await Post.findById(req.params.id);
 
@@ -26,7 +30,11 @@ const getPost = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const createPost = async (req: Request, res: Response, next: NextFunction) => {
+const createPost = async (
+  req: IGetUserAuthInfoRequest,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { postedBy, text } = req.body;
     let { img } = req.body;
@@ -38,7 +46,7 @@ const createPost = async (req: Request, res: Response, next: NextFunction) => {
 
     if (!user) throw createHttpError(404, 'User not found');
 
-    if (user._id.toString() !== String(req.session.userId)) {
+    if (user._id.toString() !== String(req.user?._id)) {
       throw createHttpError(401, 'Unauthorized to create post');
     }
 
@@ -73,7 +81,11 @@ const createPost = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const deletePost = async (req: Request, res: Response, next: NextFunction) => {
+const deletePost = async (
+  req: IGetUserAuthInfoRequest,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const post = await Post.findById(req.params.id);
 
@@ -81,7 +93,7 @@ const deletePost = async (req: Request, res: Response, next: NextFunction) => {
 
     const userId = String(post.postedBy?._id);
 
-    if (userId !== String(req.session.userId)) {
+    if (userId !== String(req.user?._id)) {
       throw createHttpError(401, 'Unauthorized to delete post');
     }
 
@@ -99,12 +111,12 @@ const deletePost = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const likeUnlikePost = async (
-  req: Request,
+  req: IGetUserAuthInfoRequest,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const userId = req.session.userId;
+    const userId = req.user._id;
 
     const user = await User.findById(userId);
 
@@ -135,12 +147,16 @@ const likeUnlikePost = async (
   }
 };
 
-const replyToPost = async (req: Request, res: Response, next: NextFunction) => {
+const replyToPost = async (
+  req: IGetUserAuthInfoRequest,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { text } = req.body;
     const postId = req.params.id;
 
-    const userId = req.session.userId;
+    const userId = req.user?._id;
 
     const user = await User.findById(userId);
 
@@ -163,9 +179,13 @@ const replyToPost = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const deleteReply = async (req: Request, res: Response, next: NextFunction) => {
+const deleteReply = async (
+  req: IGetUserAuthInfoRequest,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const userId = String(req.session.userId);
+    const userId = String(req.user?._id);
     const postId = req.params.pid;
     const replyId = req.params.id;
 
@@ -198,12 +218,12 @@ const deleteReply = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getFeedPosts = async (
-  req: Request,
+  req: IGetUserAuthInfoRequest,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const userId = req.session.userId;
+    const userId = req.user?._id;
     const user = await User.findById(userId);
 
     if (!user) return res.status(404).json({ error: 'User not found' });
@@ -221,7 +241,7 @@ const getFeedPosts = async (
 };
 
 const getUserPosts = async (
-  req: Request,
+  req: IGetUserAuthInfoRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -242,7 +262,7 @@ const getUserPosts = async (
 };
 
 const getUserReplies = async (
-  req: Request,
+  req: IGetUserAuthInfoRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -253,7 +273,9 @@ const getUserReplies = async (
 
     if (!user) return res.status(404).json({ error: 'No users found' });
 
-    const posts = await Post.find({ 'replies.user': { $eq: user._id } });
+    const userId = user?._id;
+
+    const posts = await Post.find({ 'replies.user': { $eq: userId } });
 
     if (!posts) return res.status(404).json({ error: 'No replies found' });
 

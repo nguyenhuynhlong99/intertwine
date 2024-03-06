@@ -21,7 +21,7 @@ router.patch('/:pid/reply/:id/delete', protectRoute, deleteReply);
 
 router.get('/feed', protectRoute, getFeedPosts);
 router.post('/', protectRoute, limiter, createPost);
-router.get('/:id', getPost);
+router.get('/:id', protectRoute, getPost);
 router.get('/user/:username', protectRoute, getUserPosts);
 router.get('/user/:username/replies', protectRoute, getUserReplies);
 router.delete('/:id', protectRoute, deletePost);

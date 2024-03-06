@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getToken } from '../utils/userLocalStorage';
 
 interface SignUpBody {
   email: string;
@@ -13,8 +14,8 @@ interface LoginBody {
 }
 
 const usersApi = axios.create({
-  baseURL: 'https://intertwine-server.onrender.com/api/users',
-  withCredentials: true,
+  // baseURL: 'https://intertwine-server.onrender.com/api/users',
+  baseURL: '/api/users',
 });
 
 export const signup = async (user: SignUpBody) => {
@@ -34,6 +35,12 @@ export const logout = async () => {
 };
 
 export const getCurrentUser = async () => {
-  const res = await usersApi.get('/whoami');
+  const token = await getToken();
+
+  if (!token) return null;
+
+  const res = await usersApi.get('/whoami', {
+    headers: { Authorization: `Bearer ${token}` },
+  });
   return res.data;
 };

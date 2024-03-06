@@ -21,6 +21,8 @@ const protectRoute = async (
   try {
     if (!req.headers.authorization) throw createHttpError(403, 'Unauthorized');
 
+    let userId: JwtPayload;
+
     if (req.headers.authorization.startsWith('Bearer ')) {
       const token = req.headers.authorization.split(' ')[1];
       const decoded = jwt.verify(token, env.JWT_SECRET) as JwtPayload;
@@ -29,7 +31,7 @@ const protectRoute = async (
     }
     next();
   } catch (error) {
-    next(error);
+    next(createHttpError(401, 'Token expired or invalid'));
   }
 
   // if (req.session.userId) {

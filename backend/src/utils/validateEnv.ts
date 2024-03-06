@@ -11,4 +11,5 @@ export default cleanEnv(process.env, {
   CLOUDINARY_API_KEY: str(),
   CLOUDINARY_API_SECRET: str(),
   SESSION_SECRET: str(),
+  CRON_JOB_URL: str(),
 });

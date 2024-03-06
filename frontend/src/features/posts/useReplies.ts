@@ -25,7 +25,7 @@ export function useReplies() {
     showToast('Error', 'Failed to get user replies', 'error');
   }
 
-  const replies = data?.posts;
+  const posts = data?.posts;
 
-  return { isLoading, replies };
+  return { isLoading, posts };
 }

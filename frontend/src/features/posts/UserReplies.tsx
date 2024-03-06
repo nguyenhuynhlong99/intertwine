@@ -1,4 +1,11 @@
-import { Box, Flex, Spinner, Text, useColorModeValue } from '@chakra-ui/react';
+import {
+  Box,
+  Divider,
+  Flex,
+  Spinner,
+  Text,
+  useColorModeValue,
+} from '@chakra-ui/react';
 import { useReplies } from './useReplies';
 import UserReplyLink from './UserReplyLink';
 
@@ -29,10 +36,13 @@ export interface IUserReply {
 export default function UserReplies() {
   const repliesData = useReplies();
   const isLoading = repliesData?.isLoading;
-  const replies: IUserReply[] = repliesData?.replies;
+  const posts: IUserReply[] = repliesData?.posts;
+
+  console.log(posts);
 
   const accentColor = useColorModeValue('accent.light', 'accent.dark');
   const primaryColor = useColorModeValue('primary.light', 'primary.dark');
+  const secondaryColor = useColorModeValue('secondary.light', 'secondary.dark');
 
   if (isLoading) {
     return (
@@ -42,7 +52,7 @@ export default function UserReplies() {
     );
   }
 
-  if (!isLoading && replies.length === 0) {
+  if (!isLoading && posts.length === 0) {
     return (
       <Text
         textAlign={'center'}
@@ -57,9 +67,17 @@ export default function UserReplies() {
 
   return (
     <Box as="ul">
-      {replies?.map((reply) => (
-        <Box as="li" key={`user-reply-${reply._id}`}>
-          <UserReplyLink reply={reply} postId={reply._id} />
+      {posts?.map((post, index) => (
+        <Box
+          as="li"
+          key={`user-reply-${post._id}`}
+          mb={index === posts.length - 1 ? 10 : 4}
+        >
+          <UserReplyLink post={post} postId={post._id} />
+
+          {index !== posts.length - 1 && (
+            <Divider my={2} borderColor={secondaryColor} />
+          )}
         </Box>
       ))}
     </Box>
