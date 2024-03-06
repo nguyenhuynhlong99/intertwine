@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useShowToast from '../../hooks/useShowToast';
 import axios from 'axios';
 import { updateProfile } from '../../services/apiUser';
-import { saveUser } from '../../utils/userLocalStorage';
+import { useNavigate } from 'react-router-dom';
 
 export interface EditProfileUserInputs {
   name: string;
@@ -19,12 +19,15 @@ interface MutationFnParameter {
 
 export function useEditProfile(username: string) {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const { showToast } = useShowToast();
 
   const { mutate: editProfile, isPending: isUpdating } = useMutation({
     mutationFn: ({ id, user }: MutationFnParameter) => updateProfile(id, user),
     onSuccess: (data) => {
-      saveUser(data?.user);
+      if (data.username !== username) {
+        navigate(`/${data.username}`);
+      }
       queryClient.invalidateQueries({ queryKey: ['user'] });
       queryClient.invalidateQueries({ queryKey: ['user', username] });
       showToast('Success', 'Edit profile successfully', 'success');

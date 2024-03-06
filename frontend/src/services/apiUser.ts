@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getToken } from '../utils/userLocalStorage';
 
 export interface UpdateProfileBody {
   name?: string;
@@ -15,9 +16,14 @@ export interface UserQuery {
   username?: string;
 }
 
+const token = getToken();
+
 const usersApi = axios.create({
-  baseURL: 'https://intertwine-server.onrender.com/api/users',
-  withCredentials: true,
+  // baseURL: 'https://intertwine-server.onrender.com/api/users',
+  baseURL: '/api/users',
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
 });
 
 export const getAllUsers = async (query: UserQuery) => {

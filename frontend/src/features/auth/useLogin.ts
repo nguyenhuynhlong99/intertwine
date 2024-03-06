@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { login as loginApi } from '../../services/apiAuth';
 import useShowToast from '../../hooks/useShowToast';
 import axios, { AxiosError } from 'axios';
+import { saveToken } from '../../utils/userLocalStorage';
 
 function useLogin() {
   const queryClient = useQueryClient();
@@ -11,8 +12,9 @@ function useLogin() {
 
   const { mutate: login, isPending } = useMutation({
     mutationFn: loginApi,
-    onSuccess: (user) => {
-      queryClient.setQueryData(['user'], user);
+    onSuccess: (data) => {
+      saveToken(data?.token);
+      queryClient.setQueryData(['user'], data?.user);
       navigate('/', { replace: true });
     },
     onError: (err: Error | AxiosError) => {

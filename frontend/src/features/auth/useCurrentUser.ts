@@ -1,7 +1,14 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getCurrentUser } from '../../services/apiAuth';
+import { getToken, removeToken } from '../../utils/userLocalStorage';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 export function useCurrentUser() {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const token = getToken();
+
   const { isPending, data, error } = useQuery({
     queryKey: ['user'],
     queryFn: getCurrentUser,
@@ -12,7 +19,16 @@ export function useCurrentUser() {
   });
   if (error) {
     console.log(error);
+    queryClient.removeQueries();
+    removeToken();
   }
+
+  useEffect(() => {
+    if (!token) {
+      queryClient.removeQueries();
+      navigate('/auth');
+    }
+  }, [token, navigate, queryClient]);
 
   return { isPending, data };
 }

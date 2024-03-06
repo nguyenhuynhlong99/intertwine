@@ -64,6 +64,8 @@ export default function SearchUser() {
           fontSize={'md'}
           borderRadius={20}
           onChange={debouncedChangeHandler}
+          autoComplete="username"
+          name="username"
         />
       </InputGroup>
 
