@@ -137,24 +137,15 @@ function App() {
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <BrowserRouter>
         <Routes>
-          <Route element={<AppLayout />}>
-            <Route
-              index
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <HomePage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path=":username"
-              element={
-                <ProtectedRoute>
-                  <UserPage />
-                </ProtectedRoute>
-              }
-            />
+          <Route
+            element={
+              <ProtectedRoute>
+                <AppLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index path="/" element={<HomePage />} />
+            <Route path=":username" element={<UserPage />} />
             <Route path=":username/post/:pid" element={<PostPage />} />
             <Route path="search" element={<SearchPage />} />
           </Route>

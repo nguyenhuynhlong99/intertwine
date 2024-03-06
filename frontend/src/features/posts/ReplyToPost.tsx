@@ -1,9 +1,7 @@
 import {
   Avatar,
   Button,
-  //   Flex,
   FormControl,
-  //   FormLabel,
   Grid,
   GridItem,
   Input,

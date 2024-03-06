@@ -3,6 +3,7 @@ import useShowToast from '../../hooks/useShowToast';
 import axios from 'axios';
 import { updateProfile } from '../../services/apiUser';
 import { useNavigate } from 'react-router-dom';
+import { useLogout } from './useLogout';
 
 export interface EditProfileUserInputs {
   name: string;
@@ -21,6 +22,7 @@ export function useEditProfile(username: string) {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { showToast } = useShowToast();
+  const { logout } = useLogout();
 
   const { mutate: editProfile, isPending: isUpdating } = useMutation({
     mutationFn: ({ id, user }: MutationFnParameter) => updateProfile(id, user),
@@ -35,9 +37,11 @@ export function useEditProfile(username: string) {
     onError: (err) => {
       if (axios.isAxiosError(err)) {
         showToast('Error', err?.response?.data?.error, 'error');
+        logout();
         return;
       }
       showToast('Error', 'Failed to edit profile', 'error');
+      logout();
     },
   });
   return { editProfile, isUpdating };

@@ -38,8 +38,6 @@ export default function UserReplies() {
   const isLoading = repliesData?.isLoading;
   const posts: IUserReply[] = repliesData?.posts;
 
-  console.log(posts);
-
   const accentColor = useColorModeValue('accent.light', 'accent.dark');
   const primaryColor = useColorModeValue('primary.light', 'primary.dark');
   const secondaryColor = useColorModeValue('secondary.light', 'secondary.dark');
