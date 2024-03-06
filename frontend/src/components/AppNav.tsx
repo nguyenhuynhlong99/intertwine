@@ -18,8 +18,6 @@ export default function AppNav() {
     'rgba(229, 235, 250, 0.75)',
     'rgba(5, 11, 26, 0.75)'
   );
-  // const accentColor = useColorModeValue('accent.light', 'accent.dark');
-  // const secondaryColor = useColorModeValue('secondary.light', 'secondary.dark');
   const isHomePage = location.pathname === '/';
   const templateColumns = !isHomePage ? 'repeat(5, 20%)' : 'repeat(4, 25%)';
   return (

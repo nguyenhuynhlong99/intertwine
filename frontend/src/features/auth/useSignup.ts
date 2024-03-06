@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { signup as signupApi } from '../../services/apiAuth';
 import useShowToast from '../../hooks/useShowToast';
 import axios, { AxiosError } from 'axios';
+import { saveToken } from '../../utils/userLocalStorage';
 
 function useSignup() {
   const queryClient = useQueryClient();
@@ -11,8 +12,9 @@ function useSignup() {
 
   const { mutate: signup, isPending } = useMutation({
     mutationFn: signupApi,
-    onSuccess: (user) => {
-      queryClient.setQueryData(['user'], user);
+    onSuccess: (data) => {
+      saveToken(data?.token);
+      queryClient.setQueryData(['user'], data?.user);
       navigate('/', { replace: true });
     },
     onError: (err: Error | AxiosError) => {

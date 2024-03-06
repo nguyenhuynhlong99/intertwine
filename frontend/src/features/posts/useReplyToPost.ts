@@ -5,6 +5,7 @@ import {
   ReplyBody,
   replyToPost as replyToPostApi,
 } from '../../services/apiPost';
+import { useLogout } from '../auth/useLogout';
 
 interface MutationFnParameter {
   id: string;
@@ -14,6 +15,7 @@ interface MutationFnParameter {
 function useReplyToPost(id: string) {
   const queryClient = useQueryClient();
   const { showToast } = useShowToast();
+  const { logout } = useLogout();
 
   const { mutate: replyToPost, isPending } = useMutation({
     mutationFn: ({ id, reply }: MutationFnParameter) =>
@@ -26,9 +28,11 @@ function useReplyToPost(id: string) {
     onError: (err: Error | AxiosError) => {
       if (axios.isAxiosError(err)) {
         showToast('Error', err?.response?.data?.error, 'error');
+        logout();
         return;
       }
       showToast('Error', 'Failed to reply to post', 'error');
+      logout();
     },
   });
 

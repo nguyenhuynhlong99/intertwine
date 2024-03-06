@@ -9,7 +9,6 @@ interface Reply {
 }
 
 interface Post {
-  // postedBy: mongoose.Schema.Types.ObjectId;
   postedBy: PopulatedDoc<Document<ObjectId> & IUser>;
   text: string;
   img?: string;

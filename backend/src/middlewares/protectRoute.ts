@@ -33,12 +33,6 @@ const protectRoute = async (
   } catch (error) {
     next(createHttpError(401, 'Token expired or invalid'));
   }
-
-  // if (req.session.userId) {
-  //   next();
-  // } else {
-  //   next(createHttpError(401, 'User not authenticated'));
-  // }
 };
 
 export default protectRoute;

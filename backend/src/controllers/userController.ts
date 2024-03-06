@@ -18,7 +18,7 @@ declare module 'express-session' {
 
 const createToken = (userId: Types.ObjectId) => {
   const token = jwt.sign({ userId }, String(env.JWT_SECRET), {
-    expiresIn: '5h',
+    expiresIn: 30,
   });
 
   return token;
@@ -31,7 +31,6 @@ const signupUser = async (req: Request, res: Response, next: NextFunction) => {
     const user = await User.signUp(email, password, username, name);
 
     const token = createToken(user._id);
-    // req.session.userId = user._id;
 
     user.password = null;
 
@@ -47,7 +46,6 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
     const user = await User.login(username, password);
 
     const token = createToken(user._id);
-    // req.session.userId = user._id;
 
     user.password = null;
 
@@ -204,7 +202,7 @@ const getAllUsers = async (
     const excludedFields = ['page', 'sort', 'limit', 'fields'];
     excludedFields.forEach((el) => delete queryObj[el]);
 
-    //1B) Advanced filtering
+    // Advanced filtering
     let queryString = JSON.stringify(queryObj);
     queryString = queryString.replace(
       /\b(gte|gt|lte|lt)\b/g,

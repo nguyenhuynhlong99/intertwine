@@ -177,7 +177,6 @@ export default function SignUp() {
             <Stack spacing={10} pt={2}>
               <Button
                 type="submit"
-                // loadingText="Submitting"
                 size="lg"
                 bg={useColorModeValue('secondary.light', 'secondary.dark')}
                 color={useColorModeValue('primary.light', 'primary.dark')}

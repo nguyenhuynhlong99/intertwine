@@ -3,6 +3,7 @@ import useShowToast from '../../hooks/useShowToast';
 import axios, { AxiosError } from 'axios';
 import { deletePost as deleteApi } from '../../services/apiPost';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useLogout } from '../auth/useLogout';
 
 function useDeletePost(id: string) {
   const queryClient = useQueryClient();
@@ -11,6 +12,7 @@ function useDeletePost(id: string) {
   const pathname = location?.pathname;
   const isAtPostPage = pathname.includes('post');
   const navigate = useNavigate();
+  const { logout } = useLogout();
 
   const { mutate: deletePost, isPending: isDeleting } = useMutation({
     mutationFn: deleteApi,
@@ -23,9 +25,11 @@ function useDeletePost(id: string) {
     onError: (err: Error | AxiosError) => {
       if (axios.isAxiosError(err)) {
         showToast('Error', err?.response?.data?.error, 'error');
+        logout();
         return;
       }
       showToast('Error', 'Failed to delete post', 'error');
+      logout();
     },
   });
 

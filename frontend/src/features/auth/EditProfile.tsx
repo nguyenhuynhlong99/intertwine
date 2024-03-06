@@ -15,9 +15,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { useEffect, useRef } from 'react';
 import useImgPreview from '../../hooks/useImgPreview';
 import useShowToast from '../../hooks/useShowToast';
-// import { updateProfile } from '../../services/apiUser';
 import { useEditProfile } from './useEditProfile';
-// import { useUser } from './useUser';
 
 interface Inputs {
   _id?: string;

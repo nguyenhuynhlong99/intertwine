@@ -1,13 +1,15 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { getCurrentUser } from '../../services/apiAuth';
-import { getToken, removeToken } from '../../utils/userLocalStorage';
-import { useNavigate } from 'react-router-dom';
+import { getToken } from '../../utils/userLocalStorage';
 import { useEffect } from 'react';
+import { useLogout } from './useLogout';
+import axios from 'axios';
+import useShowToast from '../../hooks/useShowToast';
 
 export function useCurrentUser() {
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
   const token = getToken();
+  const { logout } = useLogout();
+  const { showToast } = useShowToast();
 
   const { isPending, data, error } = useQuery({
     queryKey: ['user'],
@@ -17,18 +19,20 @@ export function useCurrentUser() {
     refetchOnWindowFocus: false,
     refetchOnMount: false,
   });
-  if (error) {
-    console.log(error);
-    queryClient.removeQueries();
-    removeToken();
-  }
+
+  if (!token) logout();
 
   useEffect(() => {
-    if (!token) {
-      queryClient.removeQueries();
-      navigate('/auth');
+    if (error) {
+      if (axios.isAxiosError(error)) {
+        showToast('Error', error?.response?.data?.error, 'error');
+        logout();
+        return;
+      }
+      showToast('Error', "Failed to get users's data", 'error');
+      logout();
     }
-  }, [token, navigate, queryClient]);
+  }, [error, logout, showToast]);
 
   return { isPending, data };
 }

@@ -1,5 +1,4 @@
 import {
-  // Flex,
   useColorMode,
   Box,
   Text,
@@ -8,7 +7,6 @@ import {
   GridItem,
 } from '@chakra-ui/react';
 import { Moon, Sun } from '@phosphor-icons/react';
-// import { NavLink as ReactRouterNavLink } from 'react-router-dom';
 import AppNav from './AppNav';
 import Logout from '../features/auth/Logout';
 

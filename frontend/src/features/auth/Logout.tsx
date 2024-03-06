@@ -1,22 +1,13 @@
 import { useColorMode } from '@chakra-ui/react';
 import { SignOut } from '@phosphor-icons/react';
-
-// import { useLogout } from './useLogout';
-import { removeToken } from '../../utils/userLocalStorage';
-import { useNavigate } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
+import { useLogout } from './useLogout';
 
 export default function Logout() {
-  // const { logout } = useLogout();
-  const queryClient = useQueryClient();
   const { colorMode } = useColorMode();
-  const navigate = useNavigate();
+  const { logout } = useLogout();
 
   function handleLogout() {
-    // logout();
-    queryClient.removeQueries();
-    removeToken();
-    navigate('/auth');
+    logout();
   }
 
   return (

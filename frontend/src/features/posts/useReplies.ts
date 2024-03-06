@@ -3,10 +3,13 @@ import useShowToast from '../../hooks/useShowToast';
 import axios from 'axios';
 import { getUserReplies } from '../../services/apiPost';
 import { useParams } from 'react-router-dom';
+import { useLogout } from '../auth/useLogout';
+import { useEffect } from 'react';
 
 export function useReplies() {
   const { username } = useParams();
   const { showToast } = useShowToast();
+  const { logout } = useLogout();
 
   const {
     isPending: isLoading,
@@ -17,13 +20,18 @@ export function useReplies() {
     queryFn: () => getUserReplies(String(username)),
     retry: false, //by default React Query will try to fetch the data 3 times in case it fails in the beginning.
   });
-  if (error) {
-    if (axios.isAxiosError(error)) {
-      showToast('Error', error?.response?.data?.error, 'error');
-      return;
+
+  useEffect(() => {
+    if (error) {
+      if (axios.isAxiosError(error)) {
+        showToast('Error', error?.response?.data?.error, 'error');
+        logout();
+        return;
+      }
+      showToast('Error', 'Failed to get user replies', 'error');
+      logout();
     }
-    showToast('Error', 'Failed to get user replies', 'error');
-  }
+  }, [error, logout, showToast]);
 
   const posts = data?.posts;
 
