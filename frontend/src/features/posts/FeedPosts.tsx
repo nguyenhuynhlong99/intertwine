@@ -15,9 +15,9 @@ export default function FeedPosts() {
     );
   }
 
-  if (!feedData?.isPending && feedData?.feed.length === 0) {
+  if (!feedData?.isPending && feedData?.feed?.length === 0) {
     return (
-      <Heading as={'h3'} size={'lg'}>
+      <Heading as={'h3'} size={'lg'} textAlign={'center'} mt={4}>
         It's time for you to follow some users!
       </Heading>
     );

@@ -12,8 +12,8 @@ export interface ReplyBody {
 }
 
 const postsApi = axios.create({
-  baseURL: `https://intertwine-server.onrender.com/api/posts`,
-  // baseURL: '/api/posts',
+  // baseURL: `https://intertwine-server.onrender.com/api/posts`,
+  baseURL: '/api/posts',
 });
 
 export const getPost = async (id: string) => {

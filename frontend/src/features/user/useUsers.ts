@@ -2,13 +2,15 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import useShowToast from '../../hooks/useShowToast';
 import axios from 'axios';
 import { UserQuery, getAllUsers } from '../../services/apiUser';
-import { useLogout } from '../auth/useLogout';
 import { useEffect } from 'react';
+import { useLogout } from '../auth/useLogout';
+import { useNavigate } from 'react-router-dom';
 
 export function useUsers(query: UserQuery) {
   const { showToast } = useShowToast();
   const queryClient = useQueryClient();
   const { logout } = useLogout();
+  const navigate = useNavigate();
 
   if (!query.username) delete query.username;
 
@@ -36,12 +38,12 @@ export function useUsers(query: UserQuery) {
       if (axios.isAxiosError(error)) {
         showToast('Error', error?.response?.data?.error, 'error');
         logout();
+        navigate('/auth');
         return;
       }
       showToast('Error', "Failed to get users's data", 'error');
-      logout();
     }
-  }, [error, logout, showToast]);
+  }, [error, showToast, logout, navigate]);
 
-  return { isLoading, data };
+  return { isLoading, data, error };
 }

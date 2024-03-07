@@ -1,9 +1,10 @@
 import { Flex, Spinner, useColorModeValue } from '@chakra-ui/react';
 import Reply from '../features/posts/Reply';
-import { useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import usePost from '../features/posts/usePost';
 import PostCard from '../features/posts/PostCard';
 import { Reply as IReply } from '../features/posts/UserReplies';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 
 export default function PostPage() {
   const { pid: postId } = useParams();
@@ -14,6 +15,8 @@ export default function PostPage() {
 
   const accentColor = useColorModeValue('accent.light', 'accent.dark');
 
+  useDocumentTitle(`${post?.postedBy?.username} • ${post?.text}`);
+
   if (postData?.isPending) {
     return (
       <Flex justifyContent={'center'}>
@@ -23,7 +26,7 @@ export default function PostPage() {
   }
 
   if (!postData?.isPending && !post) {
-    return null;
+    return <Navigate to="/404" replace={true} />;
   }
 
   return (

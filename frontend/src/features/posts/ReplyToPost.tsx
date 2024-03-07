@@ -17,7 +17,7 @@ import {
 import { ChatCircle } from '@phosphor-icons/react';
 import { BROKEN_LINK_IMG } from '../../utils/userLocalStorage';
 import useReplyToPost from './useReplyToPost';
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { useCurrentUser } from '../auth/useCurrentUser';
 
 interface Props {
@@ -31,7 +31,8 @@ export default function ReplyToPost({ postId, postedByUsername }: Props) {
   const { replyToPost, isPending } = useReplyToPost(postId);
   const [content, setContent] = useState<string>('');
 
-  function handleReplyToPost() {
+  function handleReplyToPost(e: FormEvent) {
+    e.preventDefault();
     replyToPost(
       { id: postId, reply: { text: content } },
       {
