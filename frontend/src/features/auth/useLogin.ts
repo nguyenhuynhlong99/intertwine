@@ -13,7 +13,6 @@ function useLogin() {
   const { mutate: login, isPending } = useMutation({
     mutationFn: loginApi,
     onSuccess: (data) => {
-      console.log(data);
       saveToken(data?.token);
       queryClient.setQueryData(['user'], data?.user);
       navigate('/', { replace: true });
