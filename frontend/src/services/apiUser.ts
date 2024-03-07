@@ -17,8 +17,8 @@ export interface UserQuery {
 }
 
 const usersApi = axios.create({
-  // baseURL: `https://intertwine-server.onrender.com/api/users`,
-  baseURL: '/api/users',
+  baseURL: `https://intertwine-server.onrender.com/api/users`,
+  // baseURL: '/api/users',
 });
 
 export const getAllUsers = async (query: UserQuery) => {
