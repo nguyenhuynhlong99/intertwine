@@ -18,7 +18,7 @@ declare module 'express-session' {
 
 const createToken = (userId: Types.ObjectId) => {
   const token = jwt.sign({ userId }, String(env.JWT_SECRET), {
-    expiresIn: 30,
+    expiresIn: '5h',
   });
 
   return token;

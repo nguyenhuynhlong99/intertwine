@@ -14,7 +14,7 @@ interface LoginBody {
 }
 
 const usersApi = axios.create({
-  baseURL: `${import.meta.env.BASE_URL}/api/users`,
+  baseURL: `https://intertwine-server.onrender.com/api/users`,
   // baseURL: '/api/users',
 });
 
