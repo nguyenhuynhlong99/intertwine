@@ -20,7 +20,7 @@ router.patch('/reply/:id', protectRoute, replyToPost);
 router.patch('/:pid/reply/:id/delete', protectRoute, deleteReply);
 
 router.get('/feed', protectRoute, getFeedPosts);
-router.post('/', protectRoute, createPost);
+router.post('/', protectRoute, limiter, createPost);
 router.get('/:id', protectRoute, getPost);
 router.get('/user/:username', protectRoute, getUserPosts);
 router.get('/user/:username/replies', protectRoute, getUserReplies);

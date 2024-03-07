@@ -2,14 +2,15 @@ import { useQuery } from '@tanstack/react-query';
 import useShowToast from '../../hooks/useShowToast';
 import axios from 'axios';
 import { getUserReplies } from '../../services/apiPost';
-import { useParams } from 'react-router-dom';
-import { useLogout } from '../auth/useLogout';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
+import { useLogout } from '../auth/useLogout';
 
 export function useReplies() {
   const { username } = useParams();
   const { showToast } = useShowToast();
   const { logout } = useLogout();
+  const navigate = useNavigate();
 
   const {
     isPending: isLoading,
@@ -25,15 +26,17 @@ export function useReplies() {
     if (error) {
       if (axios.isAxiosError(error)) {
         showToast('Error', error?.response?.data?.error, 'error');
-        logout();
+        if (error?.response?.data?.error !== 'User not found') {
+          logout();
+          navigate('/auth');
+        }
         return;
       }
       showToast('Error', 'Failed to get user replies', 'error');
-      logout();
     }
-  }, [error, logout, showToast]);
+  }, [error, showToast, logout, navigate]);
 
   const posts = data?.posts;
 
-  return { isLoading, posts };
+  return { isLoading, posts, error };
 }

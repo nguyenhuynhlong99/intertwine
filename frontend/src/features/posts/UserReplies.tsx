@@ -50,7 +50,7 @@ export default function UserReplies() {
     );
   }
 
-  if (!isLoading && posts.length === 0) {
+  if (!isLoading && posts?.length === 0) {
     return (
       <Text
         textAlign={'center'}
@@ -69,11 +69,11 @@ export default function UserReplies() {
         <Box
           as="li"
           key={`user-reply-${post._id}`}
-          mb={index === posts.length - 1 ? 10 : 4}
+          mb={index === posts?.length - 1 ? 10 : 4}
         >
           <UserReplyLink post={post} postId={post._id} />
 
-          {index !== posts.length - 1 && (
+          {index !== posts?.length - 1 && (
             <Divider my={2} borderColor={secondaryColor} />
           )}
         </Box>

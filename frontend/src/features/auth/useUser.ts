@@ -1,15 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
 import { getProfile } from '../../services/apiUser';
-import { useEffect } from 'react';
 import { getToken } from '../../utils/userLocalStorage';
-import { useLogout } from './useLogout';
 import axios from 'axios';
 import useShowToast from '../../hooks/useShowToast';
+import { useLogout } from './useLogout';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 export function useUser(username: string) {
   const token = getToken();
-  const { logout } = useLogout();
   const { showToast } = useShowToast();
+  const { logout } = useLogout();
+  const navigate = useNavigate();
 
   const {
     isPending,
@@ -21,19 +23,19 @@ export function useUser(username: string) {
     retry: false, //by default React Query will try to fetch the data 3 times in case it fails in the beginning.
   });
 
-  if (error) console.log(error);
-
   useEffect(() => {
     if (!token || error) {
       if (axios.isAxiosError(error)) {
         showToast('Error', error?.response?.data?.error, 'error');
-        logout();
+        if (error?.response?.data?.error !== 'User not found') {
+          logout();
+          navigate('/auth');
+        }
         return;
       }
       showToast('Error', "Failed to get users's data", 'error');
-      logout();
     }
-  }, [token, error, logout, showToast]);
+  }, [token, error, showToast, logout, navigate]);
 
-  return { isPending, user };
+  return { isPending, user, error };
 }

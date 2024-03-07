@@ -19,7 +19,7 @@ import {
 } from '@chakra-ui/react';
 import { Images, NotePencil } from '@phosphor-icons/react';
 import useImgPreview from '../../hooks/useImgPreview';
-import { ChangeEvent, useRef, useState } from 'react';
+import { ChangeEvent, FormEvent, useRef, useState } from 'react';
 import useCreatePost from './useCreatePost';
 import { BROKEN_LINK_IMG } from '../../utils/userLocalStorage';
 import { useCurrentUser } from '../auth/useCurrentUser';
@@ -53,7 +53,8 @@ export default function CreatePost() {
     }
   }
 
-  function handleCreatePost() {
+  function handleCreatePost(e: FormEvent) {
+    e.preventDefault();
     createPost(
       { postedBy: String(currentUser._id), text: postContent, img: imgPreview },
       {

@@ -4,10 +4,12 @@ import axios from 'axios';
 import { getPost } from '../../services/apiPost';
 import { useLogout } from '../auth/useLogout';
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function usePost(id: string) {
   const { showToast } = useShowToast();
   const { logout } = useLogout();
+  const navigate = useNavigate();
 
   const {
     isPending,
@@ -24,14 +26,15 @@ function usePost(id: string) {
       if (axios.isAxiosError(error)) {
         showToast('Error', error?.response?.data?.error, 'error');
         logout();
+        navigate('/auth');
         return;
       }
       showToast('Error', 'Failed to get post data', 'error');
       logout();
     }
-  }, [error, logout, showToast]);
+  }, [error, logout, showToast, navigate]);
 
-  return { isPending, post };
+  return { isPending, post, error };
 }
 
 export default usePost;

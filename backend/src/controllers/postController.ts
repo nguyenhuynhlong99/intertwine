@@ -271,7 +271,7 @@ const getUserReplies = async (
 
     const user = await User.findOne({ username });
 
-    if (!user) return res.status(404).json({ error: 'No users found' });
+    if (!user) return res.status(404).json({ error: 'User not found' });
 
     const userId = user?._id;
 
