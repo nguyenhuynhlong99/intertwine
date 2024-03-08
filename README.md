@@ -74,4 +74,9 @@ To run the project in your local environment, follow these steps:
 3. Run `npm run dev` to get the project started.
 4. Open [http://localhost:5173](http://localhost:5173) (or the address shown in your console) in your web browser to view the app.
 
+## 🔗 Live Demo Link: https://intertwine.onrender.com
+
 ## 📸 Images
+https://github.com/nguyenhuynhlong99/intertwine/blob/master/frontend/public/intertwine.onrender.com_auth.png
+
+https://github.com/nguyenhuynhlong99/intertwine/blob/master/frontend/public/intertwine.onrender.com_home.png
