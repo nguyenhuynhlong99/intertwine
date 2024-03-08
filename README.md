@@ -1,6 +1,6 @@
 # 🧵 Intertwine
 
-An Threads.net clone with React, Node.js, MongoDB and TypeScript. I built the side project for learning how to build a full-stack web application. The app is fully responsive with the help of Chakra UI.
+A Threads.net clone with React, Node.js, MongoDB and TypeScript. I built the side project for learning how to build a full-stack web application. The app is fully responsive with the help of Chakra UI.
 
 ## 📦 Technologies
 
